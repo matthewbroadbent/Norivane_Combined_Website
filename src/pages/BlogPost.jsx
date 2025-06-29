@@ -21,6 +21,25 @@ const BlogPost = () => {
     transition: { duration: 0.6 }
   }
 
+  // Convert markdown-style content to HTML
+  const formatContent = (content) => {
+    if (!content) return generateSampleContent(post)
+    
+    return content
+      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold text-dark-blue mb-6 mt-8">$1</h1>')
+      .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">$1</h2>')
+      .replace(/^### (.*$)/gm, '<h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">$1</h3>')
+      .replace(/^\* (.*$)/gm, '<li class="mb-2">$1</li>')
+      .replace(/^- (.*$)/gm, '<li class="mb-2">$1</li>')
+      .replace(/^\d+\. (.*$)/gm, '<li class="mb-2">$1</li>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-dark-blue">$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
+      .replace(/^(?!<[h|l|b])(.*$)/gm, '<p class="mb-4 leading-relaxed text-gray-700">$1</p>')
+      .replace(/<li class="mb-2">(.*?)<\/li>/g, (match, content) => {
+        return `<li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">${content}</li>`
+      })
+  }
+
   return (
     <div className="min-h-screen pt-16">
       {/* Hero Section */}
@@ -100,11 +119,11 @@ const BlogPost = () => {
             initial="initial"
             animate="animate"
             variants={fadeInUp}
-            className="prose prose-lg max-w-none"
+            className="prose prose-lg prose-headings:text-dark-blue prose-p:text-gray-700 prose-strong:text-dark-blue prose-li:text-gray-700 max-w-none"
           >
             <div 
-              className="text-gray-700 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: post.content || generateSampleContent(post) }}
+              className="article-content text-gray-700 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: formatContent(post.content) }}
             />
           </motion.article>
         </div>
@@ -185,163 +204,163 @@ const BlogPost = () => {
 const generateSampleContent = (post) => {
   const sampleContent = {
     'Exit Planning': `
-      <h2>Understanding Exit Planning</h2>
-      <p>Exit planning is a comprehensive strategy that helps business owners prepare for the eventual transition out of their business. Whether you're planning to sell, transfer to family members, or pursue other exit strategies, proper planning is essential for maximizing value and ensuring a smooth transition.</p>
+      <h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">Understanding Exit Planning</h2>
+      <p class="mb-4 leading-relaxed text-gray-700">Exit planning is a comprehensive strategy that helps business owners prepare for the eventual transition out of their business. Whether you're planning to sell, transfer to family members, or pursue other exit strategies, proper planning is essential for maximizing value and ensuring a smooth transition.</p>
       
-      <h3>Key Components of Exit Planning</h3>
-      <p>A successful exit plan involves several critical elements:</p>
-      <ul>
-        <li><strong>Business Valuation:</strong> Understanding your company's current worth and identifying value drivers</li>
-        <li><strong>Tax Strategy:</strong> Minimizing tax implications of your exit</li>
-        <li><strong>Succession Planning:</strong> Identifying and preparing successors</li>
-        <li><strong>Financial Planning:</strong> Ensuring your post-exit financial security</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">Key Components of Exit Planning</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">A successful exit plan involves several critical elements:</p>
+      <ul class="mb-6 space-y-2">
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Business Valuation:</strong> Understanding your company's current worth and identifying value drivers</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Tax Strategy:</strong> Minimizing tax implications of your exit</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Succession Planning:</strong> Identifying and preparing successors</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Financial Planning:</strong> Ensuring your post-exit financial security</li>
       </ul>
       
-      <h3>When to Start Planning</h3>
-      <p>The best time to start exit planning is now, regardless of when you plan to exit. Most successful exits require 3-5 years of preparation to maximize value and ensure all stakeholders are aligned.</p>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">When to Start Planning</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">The best time to start exit planning is now, regardless of when you plan to exit. Most successful exits require 3-5 years of preparation to maximize value and ensure all stakeholders are aligned.</p>
       
-      <blockquote>
-        <p>"The best exit strategies are built over years, not months. Start planning today to maximize your options tomorrow."</p>
+      <blockquote class="border-l-4 border-teal bg-gray-50 p-6 my-8 italic text-gray-600">
+        <p class="mb-0">"The best exit strategies are built over years, not months. Start planning today to maximize your options tomorrow."</p>
       </blockquote>
       
-      <h3>Common Exit Strategies</h3>
-      <p>There are several paths you can take when exiting your business:</p>
-      <ul>
-        <li>Strategic sale to a competitor or industry player</li>
-        <li>Financial sale to private equity or investment groups</li>
-        <li>Management buyout (MBO) or employee stock ownership plan (ESOP)</li>
-        <li>Family succession or gifting strategies</li>
-        <li>Initial public offering (IPO) for larger companies</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">Common Exit Strategies</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">There are several paths you can take when exiting your business:</p>
+      <ul class="mb-6 space-y-2">
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Strategic sale to a competitor or industry player</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Financial sale to private equity or investment groups</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Management buyout (MBO) or employee stock ownership plan (ESOP)</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Family succession or gifting strategies</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Initial public offering (IPO) for larger companies</li>
       </ul>
     `,
     'AI Solutions': `
-      <h2>Transforming Business with AI</h2>
-      <p>Artificial Intelligence is no longer a futuristic concept—it's a present-day reality that's transforming how businesses operate, compete, and create value. From automating routine tasks to providing deep insights from data, AI solutions are becoming essential for business growth and efficiency.</p>
+      <h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">Transforming Business with AI</h2>
+      <p class="mb-4 leading-relaxed text-gray-700">Artificial Intelligence is no longer a futuristic concept—it's a present-day reality that's transforming how businesses operate, compete, and create value. From automating routine tasks to providing deep insights from data, AI solutions are becoming essential for business growth and efficiency.</p>
       
-      <h3>Practical AI Applications</h3>
-      <p>AI can be implemented across various business functions:</p>
-      <ul>
-        <li><strong>Customer Service:</strong> Chatbots and virtual assistants for 24/7 support</li>
-        <li><strong>Sales & Marketing:</strong> Predictive analytics and personalized recommendations</li>
-        <li><strong>Operations:</strong> Process automation and predictive maintenance</li>
-        <li><strong>Finance:</strong> Fraud detection and automated reporting</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">Practical AI Applications</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">AI can be implemented across various business functions:</p>
+      <ul class="mb-6 space-y-2">
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Customer Service:</strong> Chatbots and virtual assistants for 24/7 support</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Sales & Marketing:</strong> Predictive analytics and personalized recommendations</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Operations:</strong> Process automation and predictive maintenance</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Finance:</strong> Fraud detection and automated reporting</li>
       </ul>
       
-      <h3>Getting Started with AI</h3>
-      <p>Implementing AI doesn't have to be overwhelming. Start with these steps:</p>
-      <ol>
-        <li>Identify repetitive tasks that consume significant time</li>
-        <li>Evaluate your data quality and availability</li>
-        <li>Start with pilot projects to prove value</li>
-        <li>Scale successful implementations across the organization</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">Getting Started with AI</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">Implementing AI doesn't have to be overwhelming. Start with these steps:</p>
+      <ol class="mb-6 space-y-2 list-decimal list-inside">
+        <li class="mb-2 text-gray-700">Identify repetitive tasks that consume significant time</li>
+        <li class="mb-2 text-gray-700">Evaluate your data quality and availability</li>
+        <li class="mb-2 text-gray-700">Start with pilot projects to prove value</li>
+        <li class="mb-2 text-gray-700">Scale successful implementations across the organization</li>
       </ol>
       
-      <h3>ROI of AI Implementation</h3>
-      <p>Companies that successfully implement AI solutions typically see:</p>
-      <ul>
-        <li>20-30% reduction in operational costs</li>
-        <li>15-25% increase in productivity</li>
-        <li>Improved customer satisfaction scores</li>
-        <li>Better decision-making through data insights</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">ROI of AI Implementation</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">Companies that successfully implement AI solutions typically see:</p>
+      <ul class="mb-6 space-y-2">
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">20-30% reduction in operational costs</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">15-25% increase in productivity</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Improved customer satisfaction scores</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Better decision-making through data insights</li>
       </ul>
       
-      <blockquote>
-        <p>"AI is not about replacing humans—it's about augmenting human capabilities and freeing up time for strategic, creative work."</p>
+      <blockquote class="border-l-4 border-teal bg-gray-50 p-6 my-8 italic text-gray-600">
+        <p class="mb-0">"AI is not about replacing humans—it's about augmenting human capabilities and freeing up time for strategic, creative work."</p>
       </blockquote>
     `,
     'Business Growth': `
-      <h2>Sustainable Business Growth Strategies</h2>
-      <p>Growing a business sustainably requires more than just increasing revenue—it demands strategic planning, operational excellence, and a focus on long-term value creation. Let's explore proven strategies that drive meaningful growth.</p>
+      <h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">Sustainable Business Growth Strategies</h2>
+      <p class="mb-4 leading-relaxed text-gray-700">Growing a business sustainably requires more than just increasing revenue—it demands strategic planning, operational excellence, and a focus on long-term value creation. Let's explore proven strategies that drive meaningful growth.</p>
       
-      <h3>The Growth Framework</h3>
-      <p>Successful business growth follows a structured approach:</p>
-      <ul>
-        <li><strong>Market Analysis:</strong> Understanding your market size and opportunities</li>
-        <li><strong>Competitive Positioning:</strong> Differentiating your value proposition</li>
-        <li><strong>Operational Scaling:</strong> Building systems that support growth</li>
-        <li><strong>Financial Management:</strong> Maintaining healthy cash flow during expansion</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">The Growth Framework</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">Successful business growth follows a structured approach:</p>
+      <ul class="mb-6 space-y-2">
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Market Analysis:</strong> Understanding your market size and opportunities</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Competitive Positioning:</strong> Differentiating your value proposition</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Operational Scaling:</strong> Building systems that support growth</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Financial Management:</strong> Maintaining healthy cash flow during expansion</li>
       </ul>
       
-      <h3>Key Growth Drivers</h3>
-      <p>Focus on these critical areas to accelerate growth:</p>
-      <ol>
-        <li><strong>Customer Retention:</strong> It's 5x cheaper to retain customers than acquire new ones</li>
-        <li><strong>Product Innovation:</strong> Continuously improve and expand your offerings</li>
-        <li><strong>Market Expansion:</strong> Enter new geographic or demographic markets</li>
-        <li><strong>Strategic Partnerships:</strong> Leverage relationships for mutual growth</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">Key Growth Drivers</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">Focus on these critical areas to accelerate growth:</p>
+      <ol class="mb-6 space-y-2 list-decimal list-inside">
+        <li class="mb-2 text-gray-700"><strong class="font-semibold text-dark-blue">Customer Retention:</strong> It's 5x cheaper to retain customers than acquire new ones</li>
+        <li class="mb-2 text-gray-700"><strong class="font-semibold text-dark-blue">Product Innovation:</strong> Continuously improve and expand your offerings</li>
+        <li class="mb-2 text-gray-700"><strong class="font-semibold text-dark-blue">Market Expansion:</strong> Enter new geographic or demographic markets</li>
+        <li class="mb-2 text-gray-700"><strong class="font-semibold text-dark-blue">Strategic Partnerships:</strong> Leverage relationships for mutual growth</li>
       </ol>
       
-      <h3>Measuring Growth Success</h3>
-      <p>Track these key metrics to ensure healthy growth:</p>
-      <ul>
-        <li>Customer Acquisition Cost (CAC)</li>
-        <li>Customer Lifetime Value (CLV)</li>
-        <li>Monthly Recurring Revenue (MRR)</li>
-        <li>Net Promoter Score (NPS)</li>
-        <li>Gross and net profit margins</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">Measuring Growth Success</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">Track these key metrics to ensure healthy growth:</p>
+      <ul class="mb-6 space-y-2">
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Customer Acquisition Cost (CAC)</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Customer Lifetime Value (CLV)</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Monthly Recurring Revenue (MRR)</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Net Promoter Score (NPS)</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Gross and net profit margins</li>
       </ul>
       
-      <blockquote>
-        <p>"Growth without profitability is just expensive. Focus on sustainable growth that creates long-term value."</p>
+      <blockquote class="border-l-4 border-teal bg-gray-50 p-6 my-8 italic text-gray-600">
+        <p class="mb-0">"Growth without profitability is just expensive. Focus on sustainable growth that creates long-term value."</p>
       </blockquote>
     `,
     'Thought Leadership': `
-      <h2>Building Thought Leadership in Your Industry</h2>
-      <p>Thought leadership is about more than just sharing opinions—it's about providing valuable insights that help others solve problems and make better decisions. When done right, thought leadership can significantly impact your business growth and industry influence.</p>
+      <h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">Building Thought Leadership in Your Industry</h2>
+      <p class="mb-4 leading-relaxed text-gray-700">Thought leadership is about more than just sharing opinions—it's about providing valuable insights that help others solve problems and make better decisions. When done right, thought leadership can significantly impact your business growth and industry influence.</p>
       
-      <h3>What Makes a Thought Leader</h3>
-      <p>True thought leaders share these characteristics:</p>
-      <ul>
-        <li><strong>Deep Expertise:</strong> Comprehensive knowledge in their field</li>
-        <li><strong>Unique Perspective:</strong> Fresh insights on industry challenges</li>
-        <li><strong>Consistent Communication:</strong> Regular sharing of valuable content</li>
-        <li><strong>Community Building:</strong> Engaging with and helping others</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">What Makes a Thought Leader</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">True thought leaders share these characteristics:</p>
+      <ul class="mb-6 space-y-2">
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Deep Expertise:</strong> Comprehensive knowledge in their field</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Unique Perspective:</strong> Fresh insights on industry challenges</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Consistent Communication:</strong> Regular sharing of valuable content</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold"><strong class="font-semibold text-dark-blue">Community Building:</strong> Engaging with and helping others</li>
       </ul>
       
-      <h3>Building Your Thought Leadership Platform</h3>
-      <p>Develop your influence through these channels:</p>
-      <ol>
-        <li><strong>Content Creation:</strong> Write articles, create videos, host podcasts</li>
-        <li><strong>Speaking Engagements:</strong> Present at conferences and industry events</li>
-        <li><strong>Social Media:</strong> Share insights and engage in industry discussions</li>
-        <li><strong>Networking:</strong> Build relationships with other industry leaders</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">Building Your Thought Leadership Platform</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">Develop your influence through these channels:</p>
+      <ol class="mb-6 space-y-2 list-decimal list-inside">
+        <li class="mb-2 text-gray-700"><strong class="font-semibold text-dark-blue">Content Creation:</strong> Write articles, create videos, host podcasts</li>
+        <li class="mb-2 text-gray-700"><strong class="font-semibold text-dark-blue">Speaking Engagements:</strong> Present at conferences and industry events</li>
+        <li class="mb-2 text-gray-700"><strong class="font-semibold text-dark-blue">Social Media:</strong> Share insights and engage in industry discussions</li>
+        <li class="mb-2 text-gray-700"><strong class="font-semibold text-dark-blue">Networking:</strong> Build relationships with other industry leaders</li>
       </ol>
       
-      <h3>The Business Impact</h3>
-      <p>Thought leadership delivers tangible business benefits:</p>
-      <ul>
-        <li>Increased brand recognition and credibility</li>
-        <li>Higher quality leads and customer inquiries</li>
-        <li>Premium pricing opportunities</li>
-        <li>Attraction of top talent</li>
-        <li>Strategic partnership opportunities</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">The Business Impact</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">Thought leadership delivers tangible business benefits:</p>
+      <ul class="mb-6 space-y-2">
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Increased brand recognition and credibility</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Higher quality leads and customer inquiries</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Premium pricing opportunities</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Attraction of top talent</li>
+        <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Strategic partnership opportunities</li>
       </ul>
       
-      <blockquote>
-        <p>"Thought leadership is not about being the loudest voice in the room—it's about being the most helpful one."</p>
+      <blockquote class="border-l-4 border-teal bg-gray-50 p-6 my-8 italic text-gray-600">
+        <p class="mb-0">"Thought leadership is not about being the loudest voice in the room—it's about being the most helpful one."</p>
       </blockquote>
       
-      <h3>Getting Started</h3>
-      <p>Begin your thought leadership journey by:</p>
-      <ol>
-        <li>Identifying your unique expertise and perspective</li>
-        <li>Choosing 2-3 content channels to focus on initially</li>
-        <li>Creating a consistent publishing schedule</li>
-        <li>Engaging authentically with your audience</li>
-        <li>Measuring and refining your approach based on feedback</li>
+      <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">Getting Started</h3>
+      <p class="mb-4 leading-relaxed text-gray-700">Begin your thought leadership journey by:</p>
+      <ol class="mb-6 space-y-2 list-decimal list-inside">
+        <li class="mb-2 text-gray-700">Identifying your unique expertise and perspective</li>
+        <li class="mb-2 text-gray-700">Choosing 2-3 content channels to focus on initially</li>
+        <li class="mb-2 text-gray-700">Creating a consistent publishing schedule</li>
+        <li class="mb-2 text-gray-700">Engaging authentically with your audience</li>
+        <li class="mb-2 text-gray-700">Measuring and refining your approach based on feedback</li>
       </ol>
     `
   }
   
   return sampleContent[post.category] || `
-    <h2>${post.title}</h2>
-    <p>${post.excerpt}</p>
-    <p>This is a sample article demonstrating the blog post functionality. In a real implementation, this content would be stored in your content management system and could include rich text, images, videos, and other media.</p>
-    <h3>Key Takeaways</h3>
-    <ul>
-      <li>Understanding the importance of ${post.category.toLowerCase()}</li>
-      <li>Implementing best practices in your business</li>
-      <li>Measuring success and continuous improvement</li>
+    <h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">${post.title}</h2>
+    <p class="mb-4 leading-relaxed text-gray-700">${post.excerpt}</p>
+    <p class="mb-4 leading-relaxed text-gray-700">This is a sample article demonstrating the blog post functionality. In a real implementation, this content would be stored in your content management system and could include rich text, images, videos, and other media.</p>
+    <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">Key Takeaways</h3>
+    <ul class="mb-6 space-y-2">
+      <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Understanding the importance of ${post.category.toLowerCase()}</li>
+      <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Implementing best practices in your business</li>
+      <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Measuring success and continuous improvement</li>
     </ul>
   `
 }

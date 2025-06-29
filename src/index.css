@@ -39,3 +39,66 @@ body {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
+
+/* Enhanced article content styling */
+.article-content h1 {
+  @apply text-3xl font-bold text-dark-blue mb-6 mt-8 leading-tight;
+}
+
+.article-content h2 {
+  @apply text-2xl font-bold text-dark-blue mb-4 mt-8 leading-tight;
+}
+
+.article-content h3 {
+  @apply text-xl font-semibold text-dark-blue mb-3 mt-6 leading-tight;
+}
+
+.article-content p {
+  @apply mb-4 leading-relaxed text-gray-700 text-lg;
+}
+
+.article-content ul {
+  @apply mb-6 space-y-2;
+}
+
+.article-content ol {
+  @apply mb-6 space-y-2 list-decimal list-inside;
+}
+
+.article-content li {
+  @apply text-gray-700 text-lg leading-relaxed;
+}
+
+.article-content blockquote {
+  @apply border-l-4 border-teal bg-gray-50 p-6 my-8 italic text-gray-600 text-lg;
+}
+
+.article-content strong {
+  @apply font-semibold text-dark-blue;
+}
+
+.article-content em {
+  @apply italic;
+}
+
+.article-content code {
+  @apply bg-gray-100 px-2 py-1 rounded text-sm font-mono;
+}
+
+.article-content pre {
+  @apply bg-gray-100 p-4 rounded-lg overflow-x-auto mb-4;
+}
+
+.article-content a {
+  @apply text-teal hover:text-teal/80 underline transition-colors duration-200;
+}
+
+/* Custom bullet points for lists */
+.article-content ul li {
+  @apply ml-4 relative;
+}
+
+.article-content ul li::before {
+  content: '•';
+  @apply absolute -left-4 text-teal font-bold;
+}
