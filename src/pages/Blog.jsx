@@ -1,76 +1,15 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Search, Calendar, User, ArrowRight, Tag } from 'lucide-react'
+import { useBlog } from '../contexts/BlogContext'
 
 const Blog = () => {
+  const { getPublishedPosts } = useBlog()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
   const categories = ['All', 'Exit Planning', 'AI Solutions', 'Business Growth', 'Thought Leadership']
-
-  const blogPosts = [
-    {
-      id: 1,
-      title: "The Hidden Costs of Delaying Your Exit Strategy",
-      excerpt: "Most business owners wait too long to plan their exit, leaving millions on the table. Here's why starting early is crucial for maximizing value.",
-      category: "Exit Planning",
-      author: "Sarah Mitchell",
-      date: "2024-01-15",
-      readTime: "5 min read",
-      image: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop",
-      featured: true
-    },
-    {
-      id: 2,
-      title: "AI Implementation: Beyond the Hype",
-      excerpt: "Cutting through the AI marketing noise to focus on practical implementations that deliver real ROI for professional services firms.",
-      category: "AI Solutions",
-      author: "James Richardson",
-      date: "2024-01-12",
-      readTime: "7 min read",
-      image: "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop"
-    },
-    {
-      id: 3,
-      title: "Valuation Multiples: What Buyers Really Pay For",
-      excerpt: "Understanding the factors that drive business valuations and how to position your company for premium multiples.",
-      category: "Exit Planning",
-      author: "Michael Chen",
-      date: "2024-01-10",
-      readTime: "6 min read",
-      image: "https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop"
-    },
-    {
-      id: 4,
-      title: "The Psychology of Business Transformation",
-      excerpt: "Why technical solutions fail without addressing the human element. A deep dive into change management for business owners.",
-      category: "Thought Leadership",
-      author: "Dr. Emma Thompson",
-      date: "2024-01-08",
-      readTime: "8 min read",
-      image: "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop"
-    },
-    {
-      id: 5,
-      title: "Scaling Without Breaking: Growth Strategies That Work",
-      excerpt: "How to grow your business sustainably while maintaining quality and culture. Lessons from successful scale-ups.",
-      category: "Business Growth",
-      author: "Alex Rodriguez",
-      date: "2024-01-05",
-      readTime: "6 min read",
-      image: "https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop"
-    },
-    {
-      id: 6,
-      title: "Document Automation: The Low-Hanging AI Fruit",
-      excerpt: "Start your AI journey with document processing automation. Real examples and ROI calculations from our client implementations.",
-      category: "AI Solutions",
-      author: "Sarah Mitchell",
-      date: "2024-01-03",
-      readTime: "5 min read",
-      image: "https://images.pexels.com/photos/3861958/pexels-photo-3861958.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop"
-    }
-  ]
+  const blogPosts = getPublishedPosts()
 
   const filteredPosts = blogPosts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
