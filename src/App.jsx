@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import Exit from './pages/Exit'
 import AI from './pages/AI'
 import Blog from './pages/Blog'
+import BlogPost from './pages/BlogPost'
 import Contact from './pages/Contact'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
@@ -40,6 +41,7 @@ function App() {
                     <Route path="/exit" element={<Exit />} />
                     <Route path="/ai" element={<AI />} />
                     <Route path="/blog" element={<Blog />} />
+                    <Route path="/blog/:id" element={<BlogPost />} />
                     <Route path="/contact" element={<Contact />} />
                   </Routes>
                   <Footer />

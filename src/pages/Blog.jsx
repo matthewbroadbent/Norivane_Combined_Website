@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Search, Calendar, User, ArrowRight, Tag } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { useBlog } from '../contexts/BlogContext'
 
 const Blog = () => {
@@ -154,10 +155,13 @@ const Blog = () => {
                       </div>
                       <span className="font-semibold text-dark-blue">{featuredPost.author}</span>
                     </div>
-                    <button className="flex items-center space-x-2 text-teal font-semibold hover:text-teal/80 transition-colors duration-200">
+                    <Link 
+                      to={`/blog/${featuredPost.id}`}
+                      className="flex items-center space-x-2 text-teal font-semibold hover:text-teal/80 transition-colors duration-200"
+                    >
                       <span>Read More</span>
                       <ArrowRight size={16} />
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -182,45 +186,47 @@ const Blog = () => {
                 variants={fadeInUp}
                 className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group"
               >
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-dark-blue/80 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                      {post.category}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center space-x-4 text-sm text-medium-grey mb-3">
-                    <span className="flex items-center space-x-1">
-                      <Calendar size={14} />
-                      <span>{new Date(post.date).toLocaleDateString()}</span>
-                    </span>
-                    <span>{post.readTime}</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-dark-blue mb-3 group-hover:text-teal transition-colors duration-200">
-                    {post.title}
-                  </h3>
-                  <p className="text-medium-grey mb-4 leading-relaxed">
-                    {post.excerpt}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-teal/10 rounded-full flex items-center justify-center">
-                        <User size={16} className="text-teal" />
-                      </div>
-                      <span className="text-sm font-semibold text-dark-blue">{post.author}</span>
+                <Link to={`/blog/${post.id}`} className="block">
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-dark-blue/80 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                        {post.category}
+                      </span>
                     </div>
-                    <button className="flex items-center space-x-1 text-teal font-semibold hover:text-teal/80 transition-colors duration-200">
-                      <span className="text-sm">Read</span>
-                      <ArrowRight size={14} />
-                    </button>
                   </div>
-                </div>
+                  <div className="p-6">
+                    <div className="flex items-center space-x-4 text-sm text-medium-grey mb-3">
+                      <span className="flex items-center space-x-1">
+                        <Calendar size={14} />
+                        <span>{new Date(post.date).toLocaleDateString()}</span>
+                      </span>
+                      <span>{post.readTime}</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-dark-blue mb-3 group-hover:text-teal transition-colors duration-200">
+                      {post.title}
+                    </h3>
+                    <p className="text-medium-grey mb-4 leading-relaxed">
+                      {post.excerpt}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-teal/10 rounded-full flex items-center justify-center">
+                          <User size={16} className="text-teal" />
+                        </div>
+                        <span className="text-sm font-semibold text-dark-blue">{post.author}</span>
+                      </div>
+                      <div className="flex items-center space-x-1 text-teal font-semibold hover:text-teal/80 transition-colors duration-200">
+                        <span className="text-sm">Read</span>
+                        <ArrowRight size={14} />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
               </motion.article>
             ))}
           </motion.div>
