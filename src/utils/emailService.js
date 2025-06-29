@@ -1,12 +1,6 @@
-import emailjs from '@emailjs/browser'
-
-// EmailJS configuration
+// EmailJS configuration - using global emailjs from CDN
 const SERVICE_ID = 'service_m0qgr6d'
 const TEMPLATE_ID = 'template_rwsra3u'
-const PUBLIC_KEY = 'sSDnT1cA_qkR3BmGF'
-
-// Initialize EmailJS
-emailjs.init(PUBLIC_KEY)
 
 export const sendConsultationRequest = async (formData) => {
   try {
@@ -23,7 +17,7 @@ export const sendConsultationRequest = async (formData) => {
       reply_to: formData.email
     }
 
-    const response = await emailjs.send(
+    const response = await window.emailjs.send(
       SERVICE_ID,
       TEMPLATE_ID,
       templateParams
@@ -57,7 +51,7 @@ export const sendContactMessage = async (formData) => {
       reply_to: formData.email
     }
 
-    const response = await emailjs.send(
+    const response = await window.emailjs.send(
       SERVICE_ID,
       TEMPLATE_ID,
       templateParams
@@ -89,7 +83,7 @@ export const sendLeadMagnetRequest = async (email) => {
       reply_to: email
     }
 
-    const response = await emailjs.send(
+    const response = await window.emailjs.send(
       SERVICE_ID,
       TEMPLATE_ID,
       templateParams
