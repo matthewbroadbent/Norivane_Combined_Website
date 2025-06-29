@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, TrendingUp, Target, Zap, Shield, Users, Award, ChevronDown } from 'lucide-react'
+import { sendLeadMagnetRequest } from '../utils/emailService'
+import BookingModal from '../components/BookingModal'
 
 const Home = () => {
   const [progressData, setProgressData] = useState({
@@ -9,6 +11,10 @@ const Home = () => {
     exit: 35,
     both: 20
   })
+  const [showBookingModal, setShowBookingModal] = useState(false)
+  const [leadMagnetEmail, setLeadMagnetEmail] = useState('')
+  const [leadMagnetStatus, setLeadMagnetStatus] = useState('')
+  const [isSubmittingLead, setIsSubmittingLead] = useState(false)
 
   useEffect(() => {
     // Simulate dynamic progress data
@@ -22,6 +28,29 @@ const Home = () => {
 
     return () => clearInterval(interval)
   }, [])
+
+  const handleLeadMagnetSubmit = async (e) => {
+    e.preventDefault()
+    setIsSubmittingLead(true)
+
+    try {
+      const result = await sendLeadMagnetRequest(leadMagnetEmail)
+      
+      if (result.success) {
+        setLeadMagnetStatus('success')
+        setLeadMagnetEmail('')
+        setTimeout(() => setLeadMagnetStatus(''), 3000)
+      } else {
+        setLeadMagnetStatus('error')
+        setTimeout(() => setLeadMagnetStatus(''), 3000)
+      }
+    } catch (error) {
+      setLeadMagnetStatus('error')
+      setTimeout(() => setLeadMagnetStatus(''), 3000)
+    } finally {
+      setIsSubmittingLead(false)
+    }
+  }
 
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
@@ -88,13 +117,13 @@ const Home = () => {
                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-200" />
               </Link>
               
-              <Link
-                to="/contact"
+              <button
+                onClick={() => setShowBookingModal(true)}
                 className="group text-white hover:text-teal border-b-2 border-transparent hover:border-teal font-semibold text-lg transition-all duration-300 flex items-center space-x-2"
               >
                 <span>Let's Chat First</span>
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
-              </Link>
+              </button>
             </div>
           </motion.div>
 
@@ -283,19 +312,19 @@ const Home = () => {
               </div>
               <h3 className="text-xl font-bold text-dark-blue mb-4">Proven Results</h3>
               <p className="text-medium-grey leading-relaxed">
-                Our clients see measurable improvements in efficiency, profitability, and business value. 
-                We don't just talk strategy—we deliver outcomes.
+                Our clients see measurable improvements within 90 days. From 40% productivity gains 
+                to 3x valuation increases, we deliver results that matter.
               </p>
             </motion.div>
 
             <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-20 h-20 bg-dark-blue/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Shield size={40} className="text-dark-blue" />
+              <div className="w-20 h-20 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Shield size={40} className="text-teal" />
               </div>
               <h3 className="text-xl font-bold text-dark-blue mb-4">Expert Guidance</h3>
               <p className="text-medium-grey leading-relaxed">
-                Chartered accountancy meets business psychology. We understand both the numbers 
-                and the human side of business transformation.
+                Led by a Deloitte-trained chartered accountant with deep expertise in business 
+                transformation, AI implementation, and strategic exit planning.
               </p>
             </motion.div>
 
@@ -305,80 +334,222 @@ const Home = () => {
               </div>
               <h3 className="text-xl font-bold text-dark-blue mb-4">Personal Approach</h3>
               <p className="text-medium-grey leading-relaxed">
-                Every business is unique. We craft bespoke solutions that fit your goals, 
-                timeline, and vision for the future.
+                No cookie-cutter solutions. We take time to understand your unique business, 
+                goals, and challenges to create a strategy that's perfectly tailored to you.
               </p>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Lead Magnet Section */}
-      <section className="py-20 gradient-bg">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+      {/* Success Stories Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            variants={fadeInUp}
+            variants={staggerChildren}
+            className="text-center mb-16"
           >
-            <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-8">
-              <Award size={48} className="text-white" />
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Get the Value Accelerator Checklist
-            </h2>
-            <p className="text-xl mb-8 text-gray-200">
-              7 Ways to Make Your Business Scale-Ready or Sale-Ready
-            </p>
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 max-w-md mx-auto">
-              <form className="space-y-4">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full px-4 py-3 rounded-full bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white/50"
-                />
-                <button
-                  type="submit"
-                  className="w-full bg-white text-dark-blue px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-200"
-                >
-                  Download Free Checklist
-                </button>
-              </form>
-              <p className="text-sm text-gray-300 mt-4">
-                No spam, just valuable insights. Unsubscribe anytime.
+            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
+              Success Stories
+            </motion.h2>
+            <motion.p variants={fadeInUp} className="text-xl text-medium-grey max-w-3xl mx-auto">
+              Real businesses, real transformations, real results.
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            variants={staggerChildren}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-8 shadow-xl">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 bg-teal/10 rounded-full flex items-center justify-center mr-4">
+                  <Award size={24} className="text-teal" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-dark-blue">Manufacturing Firm</h4>
+                  <p className="text-sm text-medium-grey">AI Implementation</p>
+                </div>
+              </div>
+              <p className="text-medium-grey mb-4">
+                "Norivane's AI solutions reduced our production planning time by 60% and 
+                increased efficiency by 35%. The ROI was clear within 8 weeks."
               </p>
-            </div>
+              <div className="text-teal font-semibold">40% cost reduction</div>
+            </motion.div>
+
+            <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-8 shadow-xl">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 bg-dark-blue/10 rounded-full flex items-center justify-center mr-4">
+                  <Target size={24} className="text-dark-blue" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-dark-blue">Tech Startup</h4>
+                  <p className="text-sm text-medium-grey">Exit Planning</p>
+                </div>
+              </div>
+              <p className="text-medium-grey mb-4">
+                "Their strategic exit planning helped us achieve a valuation 3x higher than 
+                our initial expectations. The process was smooth and stress-free."
+              </p>
+              <div className="text-dark-blue font-semibold">£2.4M exit value</div>
+            </motion.div>
+
+            <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-8 shadow-xl">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-teal to-dark-blue/20 rounded-full flex items-center justify-center mr-4">
+                  <TrendingUp size={24} className="text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-dark-blue">Service Business</h4>
+                  <p className="text-sm text-medium-grey">AI + Exit Strategy</p>
+                </div>
+              </div>
+              <p className="text-medium-grey mb-4">
+                "We implemented AI to streamline operations while preparing for sale. 
+                The dual approach maximized our business value significantly."
+              </p>
+              <div className="text-gradient font-semibold">Both paths, maximum value</div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-20 bg-gray-50">
+      {/* Lead Magnet Section */}
+      <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            variants={fadeInUp}
+            variants={staggerChildren}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-dark-blue mb-6">
-              The best time to build value? Right now.
-            </h2>
-            <p className="text-xl text-medium-grey mb-8 max-w-2xl mx-auto">
-              Whether you're planning to scale or sell, every day you wait is value left on the table. 
-              Let's change that.
-            </p>
-            <Link
-              to="/contact"
-              className="inline-flex items-center space-x-2 bg-teal hover:bg-teal/90 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105"
-            >
-              <span>Book a Consultation</span>
-              <ArrowRight size={20} />
-            </Link>
+            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
+              Ready to Unlock Your Business Value?
+            </motion.h2>
+            <motion.p variants={fadeInUp} className="text-xl text-medium-grey mb-8 max-w-2xl mx-auto">
+              Get our free "Business Value Accelerator" guide—discover the 7 strategies that 
+              increase business value by 40% or more.
+            </motion.p>
+
+            <motion.div variants={fadeInUp} className="bg-gray-50 rounded-2xl p-8 max-w-2xl mx-auto">
+              <h3 className="text-2xl font-bold text-dark-blue mb-4">
+                Free Download: Business Value Accelerator Guide
+              </h3>
+              <p className="text-medium-grey mb-6">
+                Learn the exact strategies we use to help businesses increase their value, 
+                whether they're scaling with AI or preparing for exit.
+              </p>
+
+              {leadMagnetStatus === 'success' ? (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+                  <div className="flex items-center justify-center mb-4">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                      <Award size={24} className="text-green-600" />
+                    </div>
+                  </div>
+                  <h4 className="text-lg font-bold text-green-800 mb-2">Guide Sent!</h4>
+                  <p className="text-green-700">
+                    Check your email for the Business Value Accelerator guide. 
+                    We'll also send you exclusive insights to help grow your business value.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleLeadMagnetSubmit} className="flex flex-col sm:flex-row gap-4">
+                  <input
+                    type="email"
+                    value={leadMagnetEmail}
+                    onChange={(e) => setLeadMagnetEmail(e.target.value)}
+                    placeholder="Enter your email address"
+                    required
+                    className="flex-1 px-6 py-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent text-lg"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubmittingLead}
+                    className="bg-teal text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-teal/90 transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmittingLead ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Get Free Guide</span>
+                        <ArrowRight size={20} />
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+
+              {leadMagnetStatus === 'error' && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-600 text-sm">
+                    Something went wrong. Please try again or contact us directly.
+                  </p>
+                </div>
+              )}
+
+              <p className="text-sm text-medium-grey mt-4">
+                No spam, ever. Unsubscribe anytime. We respect your privacy.
+              </p>
+            </motion.div>
           </motion.div>
         </div>
       </section>
+
+      {/* CTA Section */}
+      <section className="py-20 gradient-bg text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            variants={staggerChildren}
+          >
+            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold mb-6">
+              Your Business Deserves to Be Unstoppable
+            </motion.h2>
+            <motion.p variants={fadeInUp} className="text-xl mb-8 max-w-2xl mx-auto text-gray-200">
+              Whether you're ready to scale with AI or plan your perfect exit, 
+              the time to act is now. Let's build something extraordinary together.
+            </motion.p>
+
+            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <button
+                onClick={() => setShowBookingModal(true)}
+                className="bg-white text-dark-blue px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors duration-200 flex items-center space-x-2 shadow-xl"
+              >
+                <span>Book Free Consultation</span>
+                <ArrowRight size={20} />
+              </button>
+              
+              <Link
+                to="/contact"
+                className="text-white hover:text-teal border-b-2 border-transparent hover:border-teal font-semibold text-lg transition-all duration-300 flex items-center space-x-2"
+              >
+                <span>Send us a Message</span>
+                <ArrowRight size={16} />
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Booking Modal */}
+      <BookingModal 
+        isOpen={showBookingModal} 
+        onClose={() => setShowBookingModal(false)}
+        consultationType="General Consultation"
+      />
     </div>
   )
 }

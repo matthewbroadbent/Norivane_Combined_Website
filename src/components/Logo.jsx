@@ -39,7 +39,7 @@ const Logo = ({ currentPath = '/', variant = 'default' }) => {
     <div className="flex items-center text-xl font-semibold">
       <span className={`${colors.dot} font-semibold mr-1`}>•</span>
       <span className={`${colors.nor} font-semibold`}>nor</span>
-      <span className={`${colors.i} font-semibold italic -mx-0.5`}>i</span>
+      <span className={`${colors.i} font-semibold italic mx-1`}>i</span>
       <span className={`${colors.vane} font-semibold`}>vane</span>
       {suffix && (
         <span className="text-sm ml-1">

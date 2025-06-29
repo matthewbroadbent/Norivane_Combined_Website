@@ -44,15 +44,15 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Mail size={16} className="text-teal" />
-                <span className="text-gray-300">hello@norivane.co.uk</span>
+                <span className="text-gray-300">us@norivane.co.uk</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone size={16} className="text-teal" />
-                <span className="text-gray-300">+44 (0) 123 456 7890</span>
+                <span className="text-gray-300">+44 (0) 7356 224125</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin size={16} className="text-teal" />
-                <span className="text-gray-300">London, UK</span>
+                <span className="text-gray-300">Swansea, Wales, UK</span>
               </div>
             </div>
           </div>
@@ -60,7 +60,7 @@ const Footer = () => {
 
         <div className="border-t border-gray-700 mt-8 pt-8 text-center">
           <p className="text-gray-300">
-            © 2024 Norivane. All rights reserved. | 
+            © 2025 Norivane. All rights reserved. | 
             <Link to="/privacy" className="text-teal hover:underline ml-1">Privacy Policy</Link> | 
             <Link to="/terms" className="text-teal hover:underline ml-1">Terms of Service</Link>
           </p>

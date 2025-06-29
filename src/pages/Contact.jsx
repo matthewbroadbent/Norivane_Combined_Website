@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Calendar, Send, CheckCircle } from 'lucide-react'
+import { sendContactMessage } from '../utils/emailService'
+import BookingModal from '../components/BookingModal'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +13,9 @@ const Contact = () => {
     message: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitMessage, setSubmitMessage] = useState('')
+  const [showBookingModal, setShowBookingModal] = useState(false)
 
   const handleChange = (e) => {
     setFormData({
@@ -19,12 +24,35 @@ const Contact = () => {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Handle form submission here
-    console.log('Form submitted:', formData)
-    setIsSubmitted(true)
-    setTimeout(() => setIsSubmitted(false), 3000)
+    setIsSubmitting(true)
+
+    try {
+      const result = await sendContactMessage(formData)
+      
+      if (result.success) {
+        setIsSubmitted(true)
+        setSubmitMessage(result.message)
+        // Reset form after successful submission
+        setTimeout(() => {
+          setFormData({
+            name: '',
+            email: '',
+            company: '',
+            interest: '',
+            message: ''
+          })
+          setIsSubmitted(false)
+        }, 3000)
+      } else {
+        setSubmitMessage(result.message)
+      }
+    } catch (error) {
+      setSubmitMessage('An unexpected error occurred. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const fadeInUp = {
@@ -89,7 +117,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-dark-blue">Email</h3>
-                    <p className="text-medium-grey">hello@norivane.co.uk</p>
+                    <p className="text-medium-grey">us@norivane.co.uk</p>
                   </div>
                 </div>
 
@@ -99,7 +127,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-dark-blue">Phone</h3>
-                    <p className="text-medium-grey">+44 (0) 123 456 7890</p>
+                    <p className="text-medium-grey">+44 (0) 7356 224125</p>
                   </div>
                 </div>
 
@@ -109,7 +137,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-dark-blue">Location</h3>
-                    <p className="text-medium-grey">London, UK</p>
+                    <p className="text-medium-grey">Swansea, Wales, UK</p>
                   </div>
                 </div>
 
@@ -132,10 +160,24 @@ const Contact = () => {
                 <p className="text-medium-grey mb-4">
                   Skip the form and book a 30-minute consultation directly in our calendar.
                 </p>
-                <button className="bg-teal text-white px-6 py-3 rounded-full font-semibold hover:bg-teal/90 transition-colors duration-200 flex items-center space-x-2">
+                <button 
+                  onClick={() => setShowBookingModal(true)}
+                  className="bg-teal text-white px-6 py-3 rounded-full font-semibold hover:bg-teal/90 transition-colors duration-200 flex items-center space-x-2"
+                >
                   <Calendar size={20} />
                   <span>Book Now</span>
                 </button>
+              </div>
+
+              {/* Credentials */}
+              <div className="mt-8 p-6 bg-teal/5 rounded-xl border border-teal/20">
+                <h3 className="text-lg font-bold text-dark-blue mb-2">
+                  Expert Guidance You Can Trust
+                </h3>
+                <p className="text-medium-grey">
+                  Led by a <strong>Deloitte-trained chartered accountant</strong> with deep expertise 
+                  in business transformation, AI implementation, and strategic exit planning.
+                </p>
               </div>
             </motion.div>
 
@@ -248,12 +290,28 @@ const Contact = () => {
                     ></textarea>
                   </div>
 
+                  {submitMessage && !isSubmitted && (
+                    <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-red-600 text-sm">{submitMessage}</p>
+                    </div>
+                  )}
+
                   <button
                     type="submit"
-                    className="w-full bg-teal text-white px-6 py-4 rounded-lg font-semibold text-lg hover:bg-teal/90 transition-colors duration-200 flex items-center justify-center space-x-2"
+                    disabled={isSubmitting}
+                    className="w-full bg-teal text-white px-6 py-4 rounded-lg font-semibold text-lg hover:bg-teal/90 transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Send size={20} />
-                    <span>Send Message</span>
+                    {isSubmitting ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send size={20} />
+                        <span>Send Message</span>
+                      </>
+                    )}
                   </button>
 
                   <p className="text-sm text-medium-grey text-center">
@@ -301,7 +359,7 @@ const Contact = () => {
                   Do you work with businesses outside the UK?
                 </h3>
                 <p className="text-medium-grey">
-                  Yes! While we're based in London, we work with clients globally through virtual 
+                  Yes! While we're based in Swansea, we work with clients globally through virtual 
                   consultations and digital collaboration tools.
                 </p>
               </motion.div>
@@ -329,6 +387,13 @@ const Contact = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Booking Modal */}
+      <BookingModal 
+        isOpen={showBookingModal} 
+        onClose={() => setShowBookingModal(false)}
+        consultationType="General Consultation"
+      />
     </div>
   )
 }
