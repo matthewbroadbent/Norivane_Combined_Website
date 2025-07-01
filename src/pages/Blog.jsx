@@ -36,6 +36,14 @@ const Blog = () => {
     }
   }
 
+  // Get image with fallback
+  const getImageWithFallback = (imageUrl) => {
+    if (imageUrl && imageUrl.trim()) {
+      return imageUrl
+    }
+    return 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
+  }
+
   return (
     <div className="min-h-screen pt-16">
       {/* Hero Section */}
@@ -120,9 +128,13 @@ const Blog = () => {
               <div className="grid md:grid-cols-2 gap-0">
                 <div className="relative h-64 md:h-full">
                   <img
-                    src={featuredPost.image}
+                    src={getImageWithFallback(featuredPost.image)}
                     alt={featuredPost.title}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.log('Featured image failed to load:', e.target.src)
+                      e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
+                    }}
                   />
                   <div className="absolute top-4 left-4">
                     <span className="bg-teal text-white px-3 py-1 rounded-full text-sm font-semibold">
@@ -189,9 +201,13 @@ const Blog = () => {
                 <Link to={`/blog/${post.id}`} className="block">
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={post.image}
+                      src={getImageWithFallback(post.image)}
                       alt={post.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        console.log('Post image failed to load:', e.target.src)
+                        e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
+                      }}
                     />
                     <div className="absolute top-4 left-4">
                       <span className="bg-dark-blue/80 text-white px-3 py-1 rounded-full text-sm font-semibold">

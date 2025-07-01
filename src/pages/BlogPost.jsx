@@ -21,23 +21,54 @@ const BlogPost = () => {
     transition: { duration: 0.6 }
   }
 
-  // Convert markdown-style content to HTML
+  // Enhanced markdown formatting function
   const formatContent = (content) => {
     if (!content) return generateSampleContent(post)
     
-    return content
-      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold text-dark-blue mb-6 mt-8">$1</h1>')
-      .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">$1</h2>')
+    let formattedContent = content
+      // Headers - must be processed first
       .replace(/^### (.*$)/gm, '<h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">$1</h3>')
-      .replace(/^\* (.*$)/gm, '<li class="mb-2">$1</li>')
-      .replace(/^- (.*$)/gm, '<li class="mb-2">$1</li>')
-      .replace(/^\d+\. (.*$)/gm, '<li class="mb-2">$1</li>')
+      .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">$1</h2>')
+      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold text-dark-blue mb-6 mt-8">$1</h1>')
+      
+      // Bold and italic - process before paragraphs
       .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-dark-blue">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-      .replace(/^(?!<[h|l|b])(.*$)/gm, '<p class="mb-4 leading-relaxed text-gray-700">$1</p>')
-      .replace(/<li class="mb-2">(.*?)<\/li>/g, (match, content) => {
-        return `<li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">${content}</li>`
+      
+      // Lists - process before paragraphs
+      .replace(/^\* (.*$)/gm, '<li class="mb-2 ml-4 relative before:content-[\'•\'] before:absolute before:-left-4 before:text-teal before:font-bold">$1</li>')
+      .replace(/^- (.*$)/gm, '<li class="mb-2 ml-4 relative before:content-[\'•\'] before:absolute before:-left-4 before:text-teal before:font-bold">$1</li>')
+      .replace(/^\d+\. (.*$)/gm, '<li class="mb-2 ml-4 list-decimal">$1</li>')
+      
+      // Blockquotes
+      .replace(/^> (.*$)/gm, '<blockquote class="border-l-4 border-teal bg-gray-50 p-6 my-8 italic text-gray-600"><p class="mb-0">$1</p></blockquote>')
+      
+      // Paragraphs - process last, skip lines that are already formatted
+      .replace(/^(?!<[h|l|b])(.*\S.*$)/gm, '<p class="mb-4 leading-relaxed text-gray-700">$1</p>')
+      
+      // Clean up empty paragraphs
+      .replace(/<p class="mb-4 leading-relaxed text-gray-700"><\/p>/g, '')
+      
+      // Wrap consecutive list items in ul tags
+      .replace(/(<li class="mb-2 ml-4[^>]*>.*?<\/li>\s*)+/g, (match) => {
+        return `<ul class="mb-6 space-y-2">${match}</ul>`
       })
+      
+      // Wrap consecutive numbered list items in ol tags
+      .replace(/(<li class="mb-2 ml-4 list-decimal">.*?<\/li>\s*)+/g, (match) => {
+        return `<ol class="mb-6 space-y-2 list-decimal list-inside">${match}</ol>`
+      })
+
+    return formattedContent
+  }
+
+  // Get featured image with fallback
+  const getFeaturedImage = () => {
+    if (post.image && post.image.trim()) {
+      return post.image
+    }
+    // Default fallback image
+    return 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop'
   }
 
   return (
@@ -104,9 +135,13 @@ const BlogPost = () => {
             className="relative -mt-20 mb-16"
           >
             <img
-              src={post.image}
+              src={getFeaturedImage()}
               alt={post.title}
               className="w-full h-96 object-cover rounded-2xl shadow-2xl"
+              onError={(e) => {
+                console.log('Image failed to load:', e.target.src)
+                e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop'
+              }}
             />
           </motion.div>
         </div>
@@ -119,7 +154,7 @@ const BlogPost = () => {
             initial="initial"
             animate="animate"
             variants={fadeInUp}
-            className="prose prose-lg prose-headings:text-dark-blue prose-p:text-gray-700 prose-strong:text-dark-blue prose-li:text-gray-700 max-w-none"
+            className="prose prose-lg max-w-none"
           >
             <div 
               className="article-content text-gray-700 leading-relaxed"
@@ -149,9 +184,12 @@ const BlogPost = () => {
                 >
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={relatedPost.image}
+                      src={relatedPost.image || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'}
                       alt={relatedPost.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
+                      }}
                     />
                   </div>
                   <div className="p-6">

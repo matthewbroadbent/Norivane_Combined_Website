@@ -59,12 +59,64 @@ const BlogEditor = ({ post, onClose, onSave }) => {
     }
   }
 
+  // Enhanced markdown formatting for preview
+  const formatContentForPreview = (content) => {
+    if (!content) return ''
+    
+    let formattedContent = content
+      // Headers - must be processed first
+      .replace(/^### (.*$)/gm, '<h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">$1</h3>')
+      .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">$1</h2>')
+      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold text-dark-blue mb-6 mt-8">$1</h1>')
+      
+      // Bold and italic - process before paragraphs
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-dark-blue">$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
+      
+      // Lists - process before paragraphs
+      .replace(/^\* (.*$)/gm, '<li class="mb-2 ml-4 relative before:content-[\'•\'] before:absolute before:-left-4 before:text-teal before:font-bold">$1</li>')
+      .replace(/^- (.*$)/gm, '<li class="mb-2 ml-4 relative before:content-[\'•\'] before:absolute before:-left-4 before:text-teal before:font-bold">$1</li>')
+      .replace(/^\d+\. (.*$)/gm, '<li class="mb-2 ml-4 list-decimal">$1</li>')
+      
+      // Blockquotes
+      .replace(/^> (.*$)/gm, '<blockquote class="border-l-4 border-teal bg-gray-50 p-6 my-8 italic text-gray-600"><p class="mb-0">$1</p></blockquote>')
+      
+      // Paragraphs - process last, skip lines that are already formatted
+      .replace(/^(?!<[h|l|b])(.*\S.*$)/gm, '<p class="mb-4 leading-relaxed text-gray-700">$1</p>')
+      
+      // Clean up empty paragraphs
+      .replace(/<p class="mb-4 leading-relaxed text-gray-700"><\/p>/g, '')
+      
+      // Wrap consecutive list items in ul tags
+      .replace(/(<li class="mb-2 ml-4[^>]*>.*?<\/li>\s*)+/g, (match) => {
+        return `<ul class="mb-6 space-y-2">${match}</ul>`
+      })
+      
+      // Wrap consecutive numbered list items in ol tags
+      .replace(/(<li class="mb-2 ml-4 list-decimal">.*?<\/li>\s*)+/g, (match) => {
+        return `<ol class="mb-6 space-y-2 list-decimal list-inside">${match}</ol>`
+      })
+
+    return formattedContent
+  }
+
+  const getImageWithFallback = () => {
+    if (formData.image && formData.image.trim()) {
+      return formData.image
+    }
+    return 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
+  }
+
   const renderPreview = () => (
     <div className="prose prose-lg max-w-none">
       <img
-        src={formData.image || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'}
+        src={getImageWithFallback()}
         alt={formData.title}
         className="w-full h-64 object-cover rounded-lg mb-6"
+        onError={(e) => {
+          console.log('Preview image failed to load:', e.target.src)
+          e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
+        }}
       />
       <div className="flex items-center space-x-4 text-sm text-medium-grey mb-4">
         <span className="flex items-center space-x-1">
@@ -79,7 +131,10 @@ const BlogEditor = ({ post, onClose, onSave }) => {
       </div>
       <h1 className="text-4xl font-bold text-dark-blue mb-4">{formData.title}</h1>
       <p className="text-xl text-medium-grey mb-6">{formData.excerpt}</p>
-      <div className="whitespace-pre-wrap">{formData.content}</div>
+      <div 
+        className="article-content"
+        dangerouslySetInnerHTML={{ __html: formatContentForPreview(formData.content) }}
+      />
     </div>
   )
 
@@ -183,11 +238,26 @@ const BlogEditor = ({ post, onClose, onSave }) => {
                       onChange={handleChange}
                       rows={20}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent font-mono text-sm"
-                      placeholder="Write your post content here... You can use markdown formatting."
+                      placeholder="Write your post content here... You can use markdown formatting:
+
+# Main Heading
+## Sub Heading
+### Section Heading
+
+**Bold text**
+*Italic text*
+
+* Bullet point
+- Another bullet point
+1. Numbered list
+2. Second item
+
+> Blockquote text"
                     />
-                    <p className="text-sm text-medium-grey mt-2">
-                      Tip: Use markdown formatting for headers (#), lists (-), and emphasis (*text*)
-                    </p>
+                    <div className="text-sm text-medium-grey mt-2 space-y-1">
+                      <p><strong>Markdown formatting supported:</strong></p>
+                      <p># ## ### for headings, **bold**, *italic*, * - for lists, > for quotes</p>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -259,6 +329,9 @@ const BlogEditor = ({ post, onClose, onSave }) => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
                       placeholder="https://images.pexels.com/..."
                     />
+                    <p className="text-xs text-medium-grey mt-1">
+                      Use high-quality images from Pexels or similar sources
+                    </p>
                   </div>
 
                   <div className="flex items-center space-x-3">
@@ -290,24 +363,23 @@ const BlogEditor = ({ post, onClose, onSave }) => {
               </motion.div>
 
               {/* Image Preview */}
-              {formData.image && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="bg-white rounded-lg shadow-sm p-6"
-                >
-                  <h3 className="text-lg font-semibold text-dark-blue mb-4">Image Preview</h3>
-                  <img
-                    src={formData.image}
-                    alt="Preview"
-                    className="w-full h-32 object-cover rounded-lg"
-                    onError={(e) => {
-                      e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
-                    }}
-                  />
-                </motion.div>
-              )}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-white rounded-lg shadow-sm p-6"
+              >
+                <h3 className="text-lg font-semibold text-dark-blue mb-4">Image Preview</h3>
+                <img
+                  src={getImageWithFallback()}
+                  alt="Preview"
+                  className="w-full h-32 object-cover rounded-lg"
+                  onError={(e) => {
+                    console.log('Sidebar preview image failed to load:', e.target.src)
+                    e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
+                  }}
+                />
+              </motion.div>
             </div>
           </div>
         )}
