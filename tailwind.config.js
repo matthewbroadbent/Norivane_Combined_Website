@@ -7,14 +7,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        'teal': '#00B2A9',
-        'dark-blue': '#0A2342',
-        'dark-grey': '#212529',
-        'medium-grey': '#6c757d',
-      },
-      fontFamily: {
-        'montserrat': ['Montserrat', 'sans-serif'],
-      },
+        'dark-blue': '#1e3a8a',
+        'medium-grey': '#6b7280',
+        'dark-grey': '#374151',
+        'teal': '#14b8a6',
+        'light-grey': '#f9fafb',
+        primary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+        }
+      }
     },
   },
   plugins: [],
