@@ -6,3 +6,13 @@ Sitemap: https://norivane.com/sitemap.xml
 
 # Block admin areas
 Disallow: /admin/
+
+# Allow important pages
+Allow: /
+Allow: /ai
+Allow: /exit
+Allow: /blog
+Allow: /contact
+
+# Crawl delay (optional - remove if causing issues)
+Crawl-delay: 1
