@@ -11,8 +11,10 @@ import BlogPost from './pages/BlogPost'
 import Contact from './pages/Contact'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
+import Sitemap from './pages/Sitemap'
 import ProtectedRoute from './components/ProtectedRoute'
 import Footer from './components/Footer'
+import SitemapGenerator from './components/SitemapGenerator'
 
 function App() {
   return (
@@ -20,7 +22,11 @@ function App() {
       <BlogProvider>
         <Router>
           <div className="min-h-screen bg-white">
+            <SitemapGenerator />
             <Routes>
+              {/* Sitemap Route */}
+              <Route path="/sitemap.xml" element={<Sitemap />} />
+              
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route 

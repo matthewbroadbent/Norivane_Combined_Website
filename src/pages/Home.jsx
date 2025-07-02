@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight, TrendingUp, Target, Zap, Shield, Users, Award, ChevronDown } from 'lucide-react'
 import { sendLeadMagnetRequest } from '../utils/emailService'
 import BookingModal from '../components/BookingModal'
+import SEOHelmet from '../components/SEOHelmet'
 
 const Home = () => {
   const [progressData, setProgressData] = useState({
@@ -68,6 +69,13 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHelmet 
+        title="Norivane - Scale Smarter or Sell Stronger | Business Consulting"
+        description="Unlock hidden business value with AI implementation or strategic exit planning. Expert guidance from Deloitte-trained consultants for unstoppable business growth."
+        keywords="business consulting, AI implementation, exit planning, business valuation, strategic consulting, business growth, AI solutions"
+        canonicalUrl="/"
+      />
+      
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 gradient-bg"></div>
