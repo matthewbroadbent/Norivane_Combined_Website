@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 
 const FAQSection = ({ 
@@ -14,142 +13,113 @@ const FAQSection = ({
     setOpenIndex(openIndex === index ? null : index)
   }
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 30 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
-  }
-
-  const staggerChildren = {
-    animate: {
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  }
-
-  // Generate structured data for FAQ
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faqs.map(faq => ({
-      "@type": "Question",
-      "name": faq.question,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": faq.answer
-      }
-    }))
+  if (!faqs || faqs.length === 0) {
+    return null
   }
 
   return (
-    <section className={`py-20 bg-white ${className}`}>
-      {/* Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-          variants={staggerChildren}
-          className="text-center mb-16"
-        >
-          <motion.h2 
-            variants={fadeInUp}
-            className="text-4xl md:text-5xl font-bold text-dark-blue mb-6"
-          >
-            {title}
-          </motion.h2>
-          <motion.p 
-            variants={fadeInUp}
-            className="text-xl text-medium-grey max-w-2xl mx-auto"
-          >
+    <section className={`section bg-gray ${className}`}>
+      <div className="container">
+        <div className="text-center mb-16">
+          <h2>{title}</h2>
+          <p style={{ fontSize: '1.25rem', maxWidth: '800px', margin: '0 auto' }}>
             {subtitle}
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
-        <motion.div
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-          variants={staggerChildren}
-          className="space-y-4"
-        >
+        <div style={{ 
+          maxWidth: '800px', 
+          margin: '0 auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1rem'
+        }}>
           {faqs.map((faq, index) => (
-            <motion.div
+            <div
               key={index}
-              variants={fadeInUp}
-              className="bg-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
+              className="card"
+              style={{ padding: 0, overflow: 'hidden' }}
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-8 py-6 text-left flex items-center justify-between hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal/20"
+                style={{
+                  width: '100%',
+                  padding: '2rem',
+                  textAlign: 'left',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s ease'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#F8F9FA'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                 aria-expanded={openIndex === index}
                 aria-controls={`faq-answer-${index}`}
               >
-                <h3 className="text-lg font-semibold text-dark-blue pr-4">
+                <h4 style={{ 
+                  fontSize: '1.125rem', 
+                  fontWeight: 600, 
+                  color: '#0A2342',
+                  margin: 0,
+                  paddingRight: '1rem'
+                }}>
                   {faq.question}
-                </h3>
-                <div className="flex-shrink-0">
+                </h4>
+                <div style={{ flexShrink: 0 }}>
                   {openIndex === index ? (
-                    <ChevronUp size={24} className="text-teal" />
+                    <ChevronUp size={24} style={{ color: '#00B2A9' }} />
                   ) : (
-                    <ChevronDown size={24} className="text-medium-grey" />
+                    <ChevronDown size={24} style={{ color: '#6B7280' }} />
                   )}
                 </div>
               </button>
-
-              <AnimatePresence>
-                {openIndex === index && (
-                  <motion.div
-                    id={`faq-answer-${index}`}
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-8 pb-6">
-                      <div className="border-t border-gray-200 pt-6">
-                        <p className="text-medium-grey leading-relaxed">
-                          {faq.answer}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
+              
+              {openIndex === index && (
+                <div
+                  id={`faq-answer-${index}`}
+                  style={{
+                    padding: '0 2rem 2rem',
+                    borderTop: '1px solid #E5E7EB'
+                  }}
+                >
+                  <div style={{ 
+                    color: '#6B7280', 
+                    lineHeight: 1.7,
+                    paddingTop: '1rem'
+                  }}>
+                    {typeof faq.answer === 'string' ? (
+                      <p style={{ margin: 0 }}>{faq.answer}</p>
+                    ) : (
+                      faq.answer
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
-        </motion.div>
+        </div>
 
-        {/* CTA after FAQ */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="text-center mt-16"
-        >
-          <div className="bg-gradient-to-r from-dark-blue to-teal rounded-2xl p-8 text-white">
-            <h3 className="text-2xl font-bold mb-4">
-              Still have questions?
-            </h3>
-            <p className="text-gray-200 mb-6">
-              We're here to help. Book a free consultation to discuss your specific needs.
-            </p>
-            <a
-              href="/contact"
-              className="inline-flex items-center bg-white text-dark-blue px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-200"
-            >
-              Get in Touch
-            </a>
-          </div>
-        </motion.div>
+        {/* Structured Data for SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": faqs.map(faq => ({
+                "@type": "Question",
+                "name": faq.question,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": typeof faq.answer === 'string' ? faq.answer : faq.question
+                }
+              }))
+            })
+          }}
+        />
       </div>
     </section>
   )

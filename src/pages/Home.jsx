@@ -1,375 +1,379 @@
 import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { ArrowRight, Zap, TrendingUp, Users, Clock, Shield, CheckCircle, Star } from 'lucide-react'
+import { ArrowRight, CheckCircle, Star, Users, TrendingUp, Shield, Zap, Target, Brain, MessageSquare } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import BookingModal from '../components/BookingModal'
-import FAQSection from '../components/FAQSection'
 import SEOHelmet from '../components/SEOHelmet'
-import { homeFAQs } from '../data/faqData'
 
 const Home = () => {
   const [showBookingModal, setShowBookingModal] = useState(false)
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 60 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
-  }
-
-  const staggerChildren = {
-    animate: {
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  }
-
   return (
-    <div className="min-h-screen">
+    <div>
       <SEOHelmet 
-        title="Norivane | AI Implementation & Strategic Exit Planning | Business Growth Experts"
-        description="Transform your business with AI implementation and strategic exit planning. 40% productivity gains, 3x higher valuations. Expert consulting for ambitious business owners."
-        keywords="AI implementation, business exit planning, business consulting, artificial intelligence, exit strategy, business valuation, productivity improvement"
+        title="Norivane | Strategic Business Consulting & AI Implementation"
+        description="Transform your business with strategic consulting, AI implementation, and exit planning. 40% productivity gains, 300-500% ROI. Expert guidance for sustainable growth."
+        keywords="business consulting, AI implementation, exit planning, strategic consulting, business growth, productivity improvement"
         canonicalUrl="/"
       />
 
+      {/* Navigation Spacer */}
+      <div className="nav-spacer"></div>
+
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 gradient-bg"></div>
-        <div className="absolute inset-0 bg-black/20"></div>
-        
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-teal/10 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
-        </div>
+      <section className="hero">
+        <div className="hero-content">
+          <h1>
+            Transform Your Business<br />
+            with <span style={{ color: '#00B2A9' }}>Strategic Excellence</span>
+          </h1>
+          
+          <p>
+            Expert consulting in AI implementation, strategic planning, and exit preparation. 
+            Delivering measurable results that drive sustainable growth and maximize business value.
+          </p>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mt-8"
-          >
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              Transform Your Business<br />
-              with <span className="text-teal">AI & Strategic Exits</span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto text-gray-200 leading-relaxed">
-              We help ambitious business owners implement AI for 40% productivity gains 
-              and plan strategic exits for 3x higher valuations. Real results, not just advice.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '2rem',
+            marginBottom: '3rem'
+          }}>
+            {/* Service Choice Buttons */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              width: '100%',
+              maxWidth: '600px'
+            }}>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '1rem',
+                marginBottom: '1rem'
+              }}>
+                <Link
+                  to="/ai"
+                  className="btn btn-white"
+                  style={{ 
+                    fontSize: '1rem', 
+                    padding: '1rem 1.5rem',
+                    textDecoration: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  <Brain size={20} />
+                  <span>AI Implementation</span>
+                  <ArrowRight size={16} />
+                </Link>
+                
+                <Link
+                  to="/exit-planning"
+                  className="btn btn-white"
+                  style={{ 
+                    fontSize: '1rem', 
+                    padding: '1rem 1.5rem',
+                    textDecoration: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  <Target size={20} />
+                  <span>Exit Planning</span>
+                  <ArrowRight size={16} />
+                </Link>
+              </div>
+              
               <button
                 onClick={() => setShowBookingModal(true)}
-                className="group bg-teal hover:bg-teal/90 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 flex items-center space-x-2 shadow-xl hover:shadow-2xl transform hover:scale-105"
+                className="btn btn-secondary"
+                style={{ 
+                  fontSize: '1.125rem', 
+                  padding: '1rem 2rem',
+                  borderColor: 'white',
+                  color: 'white'
+                }}
               >
                 <Zap size={20} />
                 <span>Book Free Consultation</span>
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-200" />
-              </button>
-              
-              <div className="text-white/80 text-sm">
-                <div className="flex items-center space-x-2 mb-1">
-                  <CheckCircle size={16} className="text-teal" />
-                  <span>90-day results guarantee</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle size={16} className="text-teal" />
-                  <span>No long-term contracts</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">40%</div>
-                <div className="text-sm text-gray-300">Productivity Increase</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">3x</div>
-                <div className="text-sm text-gray-300">Higher Valuations</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">90</div>
-                <div className="text-sm text-gray-300">Days to Results</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">£2.4M</div>
-                <div className="text-sm text-gray-300">Average Exit Value</div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="text-center mb-16"
-          >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
-              Two Paths to Business Success
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl text-medium-grey max-w-3xl mx-auto">
-              Whether you're looking to grow with AI or planning your exit, we deliver results that matter.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="grid md:grid-cols-2 gap-12"
-          >
-            <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-              <div className="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mb-6">
-                <Zap size={32} className="text-teal" />
-              </div>
-              <h3 className="text-3xl font-bold text-dark-blue mb-4">AI Implementation</h3>
-              <p className="text-medium-grey mb-6 text-lg leading-relaxed">
-                Transform your operations with practical AI solutions that deliver immediate ROI. 
-                From customer service automation to predictive analytics.
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center space-x-3">
-                  <CheckCircle size={20} className="text-teal" />
-                  <span className="text-dark-grey">40% productivity improvement</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle size={20} className="text-teal" />
-                  <span className="text-dark-grey">90-day implementation</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle size={20} className="text-teal" />
-                  <span className="text-dark-grey">No technical expertise required</span>
-                </li>
-              </ul>
-              <a
-                href="/ai"
-                className="inline-flex items-center text-teal font-semibold hover:text-teal/80 transition-colors duration-200"
-              >
-                Learn More About AI Solutions
-                <ArrowRight size={20} className="ml-2" />
-              </a>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-              <div className="w-16 h-16 bg-dark-blue/10 rounded-full flex items-center justify-center mb-6">
-                <TrendingUp size={32} className="text-dark-blue" />
-              </div>
-              <h3 className="text-3xl font-bold text-dark-blue mb-4">Strategic Exit Planning</h3>
-              <p className="text-medium-grey mb-6 text-lg leading-relaxed">
-                Maximize your business value and plan the perfect exit. From valuation 
-                optimization to buyer identification and deal execution.
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center space-x-3">
-                  <CheckCircle size={20} className="text-dark-blue" />
-                  <span className="text-dark-grey">3x higher valuations achieved</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle size={20} className="text-dark-blue" />
-                  <span className="text-dark-grey">Confidential process</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle size={20} className="text-dark-blue" />
-                  <span className="text-dark-grey">End-to-end support</span>
-                </li>
-              </ul>
-              <a
-                href="/exit"
-                className="inline-flex items-center text-dark-blue font-semibold hover:text-dark-blue/80 transition-colors duration-200"
-              >
-                Learn More About Exit Planning
-                <ArrowRight size={20} className="ml-2" />
-              </a>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Results Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="text-center mb-16"
-          >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
-              Real Results from Real Businesses
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl text-medium-grey max-w-3xl mx-auto">
-              Our clients see measurable improvements within 90 days. Here's what they achieve.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="grid md:grid-cols-2 gap-8"
-          >
-            <motion.div variants={fadeInUp} className="bg-gray-50 rounded-2xl p-8">
-              <div className="flex items-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={20} className="text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <p className="text-medium-grey mb-6 italic text-lg">
-                "Norivane's AI implementation transformed our customer service. We now handle 
-                3x more inquiries with the same team, and customer satisfaction is up 45%. 
-                The ROI was clear within 6 weeks."
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-teal/10 rounded-full flex items-center justify-center mr-4">
-                  <Users size={24} className="text-teal" />
-                </div>
-                <div>
-                  <div className="font-semibold text-dark-blue">Sarah Mitchell</div>
-                  <div className="text-sm text-medium-grey">CEO, TechFlow Solutions</div>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="bg-gray-50 rounded-2xl p-8">
-              <div className="flex items-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={20} className="text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <p className="text-medium-grey mb-6 italic text-lg">
-                "The exit planning process was flawless. Norivane helped us achieve a 
-                valuation 2.8x higher than our initial estimate. Their expertise in 
-                positioning and negotiation was invaluable."
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-dark-blue/10 rounded-full flex items-center justify-center mr-4">
-                  <TrendingUp size={24} className="text-dark-blue" />
-                </div>
-                <div>
-                  <div className="font-semibold text-dark-blue">James Rodriguez</div>
-                  <div className="text-sm text-medium-grey">Founder, RetailMax (Sold for £3.2M)</div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Why Choose Us Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="text-center mb-16"
-          >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
-              Why Business Owners Choose Norivane
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl text-medium-grey max-w-3xl mx-auto">
-              We're not just consultants—we're your partners in transformation and success.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="grid md:grid-cols-3 gap-8"
-          >
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Shield size={32} className="text-teal" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Results Guaranteed</h3>
-              <p className="text-medium-grey">
-                90-day results guarantee. If you don't see measurable improvements, 
-                we'll work with you until you do—at no additional cost.
-              </p>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-dark-blue/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Users size={32} className="text-dark-blue" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Expert Team</h3>
-              <p className="text-medium-grey">
-                Deloitte-trained chartered accountant with deep expertise in AI 
-                implementation and strategic business exits.
-              </p>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Clock size={32} className="text-teal" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Fast Implementation</h3>
-              <p className="text-medium-grey">
-                See results within 90 days, not months. Our proven methodologies 
-                deliver rapid, sustainable improvements.
-              </p>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <FAQSection 
-        faqs={homeFAQs}
-        title="Frequently Asked Questions"
-        subtitle="Get answers to common questions about our AI implementation and exit planning services."
-      />
-
-      {/* CTA Section */}
-      <section className="py-20 gradient-bg text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-          >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold mb-6">
-              Ready to Transform Your Business?
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl mb-8 max-w-2xl mx-auto text-gray-200">
-              Join the businesses already seeing 40% productivity gains and 3x higher valuations. 
-              Book your free consultation today.
-            </motion.p>
-
-            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <button
-                onClick={() => setShowBookingModal(true)}
-                className="bg-white text-dark-blue px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors duration-200 flex items-center space-x-2 shadow-xl"
-              >
-                <span>Book Free Consultation</span>
                 <ArrowRight size={20} />
               </button>
-              
-              <div className="text-white/80 text-sm">
-                <div className="flex items-center space-x-2">
-                  <Shield size={16} className="text-teal" />
-                  <span>90-day results guarantee</span>
+            </div>
+            
+            <div style={{ textAlign: 'center', fontSize: '0.875rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                <CheckCircle size={16} style={{ color: '#00B2A9' }} />
+                <span>Free initial consultation</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                <CheckCircle size={16} style={{ color: '#00B2A9' }} />
+                <span>Results guaranteed</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="hero-stats">
+            <div className="stat-item">
+              <span className="stat-number">500%</span>
+              <span className="stat-label">Average ROI</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-number">40%</span>
+              <span className="stat-label">Productivity Increase</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-number">90</span>
+              <span className="stat-label">Days to Results</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-number">100+</span>
+              <span className="stat-label">Businesses Transformed</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Overview */}
+      <section className="section bg-white">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2>Strategic Solutions for Modern Businesses</h2>
+            <p style={{ fontSize: '1.25rem', maxWidth: '800px', margin: '0 auto' }}>
+              We deliver comprehensive consulting services that drive real results. From AI implementation 
+              to strategic exit planning, we're your partner in sustainable growth.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-3">
+            <div className="card">
+              <div className="card-icon teal">
+                <Brain size={32} />
+              </div>
+              <h3>AI Implementation</h3>
+              <p>
+                Transform your operations with practical AI solutions. 40% productivity improvements 
+                and 300-500% ROI within 90 days.
+              </p>
+              <Link 
+                to="/ai" 
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontWeight: 600,
+                  color: '#00B2A9',
+                  textDecoration: 'none',
+                  marginTop: '1rem'
+                }}
+              >
+                Learn More <ArrowRight size={16} />
+              </Link>
+            </div>
+
+            <div className="card">
+              <div className="card-icon slate">
+                <TrendingUp size={32} />
+              </div>
+              <h3>Strategic Consulting</h3>
+              <p>
+                Comprehensive business strategy development, operational optimization, 
+                and growth planning for sustainable success.
+              </p>
+              <Link 
+                to="/about" 
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontWeight: 600,
+                  color: '#00B2A9',
+                  textDecoration: 'none',
+                  marginTop: '1rem'
+                }}
+              >
+                Learn More <ArrowRight size={16} />
+              </Link>
+            </div>
+
+            <div className="card">
+              <div className="card-icon teal">
+                <Target size={32} />
+              </div>
+              <h3>Exit Planning</h3>
+              <p>
+                Strategic exit planning that maximizes business value. 2-3x valuation increases 
+                through expert preparation and execution.
+              </p>
+              <Link 
+                to="/exit-planning" 
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontWeight: 600,
+                  color: '#00B2A9',
+                  textDecoration: 'none',
+                  marginTop: '1rem'
+                }}
+              >
+                Learn More <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="section bg-gray">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2>Why Leading Businesses Choose Norivane</h2>
+            <p style={{ fontSize: '1.25rem', maxWidth: '800px', margin: '0 auto' }}>
+              Our proven methodology and expert team deliver results that matter to your bottom line.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-4">
+            <div className="text-center">
+              <div className="card-icon teal" style={{ margin: '0 auto 1.5rem' }}>
+                <Shield size={32} />
+              </div>
+              <h4>Proven Results</h4>
+              <p>
+                Track record of delivering measurable improvements across diverse industries and business sizes.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="card-icon slate" style={{ margin: '0 auto 1.5rem' }}>
+                <Users size={32} />
+              </div>
+              <h4>Expert Team</h4>
+              <p>
+                Seasoned consultants with deep industry expertise and hands-on implementation experience.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="card-icon teal" style={{ margin: '0 auto 1.5rem' }}>
+                <MessageSquare size={32} />
+              </div>
+              <h4>Tailored Approach</h4>
+              <p>
+                Custom solutions designed specifically for your business needs, challenges, and objectives.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="card-icon slate" style={{ margin: '0 auto 1.5rem' }}>
+                <TrendingUp size={32} />
+              </div>
+              <h4>Ongoing Support</h4>
+              <p>
+                Continuous guidance and optimization to ensure sustained success and maximum ROI.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Client Success Stories */}
+      <section className="section bg-white">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2>Client Success Stories</h2>
+            <p style={{ fontSize: '1.25rem', maxWidth: '800px', margin: '0 auto' }}>
+              Real businesses achieving extraordinary results through strategic transformation.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2">
+            <div className="card">
+              <div style={{ display: 'flex', gap: '0.25rem', marginBottom: '1rem' }}>
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={20} style={{ color: '#FCD34D', fill: '#FCD34D' }} />
+                ))}
+              </div>
+              <p style={{ fontStyle: 'italic', marginBottom: '1.5rem' }}>
+                "Norivane's AI implementation transformed our customer service operations. 
+                We achieved 60% cost reduction while improving response times by 90%. 
+                The ROI exceeded 400% within the first year."
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div className="card-icon teal" style={{ width: '3rem', height: '3rem', margin: 0 }}>
+                  <Users size={24} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 600, color: '#0A2342' }}>Sarah Mitchell</div>
+                  <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>CEO, TechFlow Solutions</div>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+
+            <div className="card">
+              <div style={{ display: 'flex', gap: '0.25rem', marginBottom: '1rem' }}>
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={20} style={{ color: '#FCD34D', fill: '#FCD34D' }} />
+                ))}
+              </div>
+              <p style={{ fontStyle: 'italic', marginBottom: '1.5rem' }}>
+                "The exit planning process was exceptional. Norivane increased our business 
+                valuation by 250% and guided us through a seamless sale. Their expertise 
+                made all the difference in achieving our goals."
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div className="card-icon slate" style={{ width: '3rem', height: '3rem', margin: 0 }}>
+                  <Target size={24} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 600, color: '#0A2342' }}>James Rodriguez</div>
+                  <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>Founder, GreenTech Industries</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="section bg-gradient">
+        <div className="container text-center">
+          <h2 style={{ marginBottom: '1.5rem' }}>
+            Ready to Transform Your Business?
+          </h2>
+          <p style={{ fontSize: '1.25rem', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem' }}>
+            Join the businesses achieving extraordinary results. Book your free consultation 
+            and discover how we can accelerate your success.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
+            <button
+              onClick={() => setShowBookingModal(true)}
+              className="btn btn-white"
+              style={{ fontSize: '1.125rem' }}
+            >
+              <span>Book Free Consultation</span>
+              <ArrowRight size={20} />
+            </button>
+            
+            <Link 
+              to="/about"
+              className="btn btn-secondary"
+              style={{ 
+                borderColor: 'white', 
+                color: 'white',
+                fontSize: '1.125rem'
+              }}
+            >
+              Learn More About Us
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -377,7 +381,7 @@ const Home = () => {
       <BookingModal 
         isOpen={showBookingModal} 
         onClose={() => setShowBookingModal(false)}
-        consultationType="Business Transformation Consultation"
+        consultationType="Strategic Business Consultation"
       />
     </div>
   )

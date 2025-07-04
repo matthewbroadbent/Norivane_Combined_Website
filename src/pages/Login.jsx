@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Lock, User, AlertCircle } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import SEOHelmet from '../components/SEOHelmet'
 
-const AdminLogin = () => {
+const Login = () => {
   const [credentials, setCredentials] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -19,7 +20,7 @@ const AdminLogin = () => {
     try {
       const success = login(credentials)
       if (success) {
-        navigate('/admin/dashboard')
+        navigate('/admin')
       } else {
         setError('Invalid email or password')
       }
@@ -39,6 +40,12 @@ const AdminLogin = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-blue to-teal flex items-center justify-center p-4">
+      <SEOHelmet 
+        title="Admin Login | Norivane"
+        description="Secure admin login for Norivane dashboard access."
+        noIndex={true}
+      />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -115,4 +122,4 @@ const AdminLogin = () => {
   )
 }
 
-export default AdminLogin
+export default Login
