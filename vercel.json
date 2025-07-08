@@ -1,5 +1,5 @@
 {
- "functions": {
+  "functions": {
     "api/blog/posts.js": {
       "runtime": "nodejs18.x"
     },
@@ -11,12 +11,6 @@
     {
       "source": "/blog/:slug",
       "destination": "/blog/[slug].html"
-    }
-  ]
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
     }
   ]
 }
