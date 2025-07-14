@@ -2,26 +2,19 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Search, Calendar, User, ArrowRight, Tag } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useBlog } from '../contexts/BlogContext' // This import stays the same
+import { useBlog } from '../contexts/BlogContext'
 import SEOHelmet from '../components/SEOHelmet'
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation'
 
 const Blog = () => {
-  // === MODIFICATION START ===
-  // Destructure blogPosts, loading, and error from useBlog()
   const { blogPosts: allBlogPosts, loading, error } = useBlog(); 
-  // We'll rename it to allBlogPosts to avoid conflict with the filtered version
-  // === MODIFICATION END ===
 
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
   const categories = ['All', 'Exit Planning', 'AI Solutions', 'Business Growth', 'Thought Leadership']
   
-  // === MODIFICATION START ===
-  // blogPosts now references the data from the context (allBlogPosts)
   const filteredPosts = allBlogPosts.filter(post => { 
-  // === MODIFICATION END ===
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory
@@ -136,12 +129,10 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* === MODIFICATION START === */}
       {/* Conditional Rendering for Loading and Error States */}
       {loading && (
         <section className="py-16 text-center text-dark-blue">
           <p className="text-xl">Loading blog posts... please wait.</p>
-          {/* You could add a spinner here if you like! */}
         </section>
       )}
 
@@ -151,7 +142,6 @@ const Blog = () => {
           <p className="text-lg">Could not load blog posts. Please check your internet connection or try again later.</p>
         </section>
       )}
-      {/* === MODIFICATION END === */}
 
       {/* Only render blog content if not loading and no error */}
       {!loading && !error && (
@@ -174,7 +164,7 @@ const Blog = () => {
                         alt={featuredPost.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          console.log('Featured image failed to load:', e.target.src)
+                          // console.log('Featured image failed to load:', e.target.src) // Commented out
                           e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
                         }}
                       />
@@ -209,8 +199,9 @@ const Blog = () => {
                           </div>
                           <span className="font-semibold text-dark-blue">{featuredPost.author}</span>
                         </div>
+                        {/* === FEATURED POST LINK FIX === */}
                         <Link 
-                          to={`/blog/${featuredPost.id}`} // Link still uses ID, we'll change this to slug later
+                          to={`/blog/${featuredPost.slug}`} // Changed from ID to SLUG!
                           className="flex items-center space-x-2 text-teal font-semibold hover:text-teal/80 transition-colors duration-200"
                         >
                           <span>Read More</span>
@@ -234,23 +225,23 @@ const Blog = () => {
                 variants={staggerChildren}
                 className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
-                {/* === MODIFICATION START === */}
                 {/* Only render regular posts if there are any */}
                 {regularPosts.length > 0 ? (
                   regularPosts.map((post) => (
                     <motion.article
-                      key={post.id} // Key still uses ID, we'll change this to slug later
+                      key={post.id} // Key can stay ID or change to slug, ID is fine here
                       variants={fadeInUp}
                       className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group"
                     >
-                      <Link to={`/blog/${post.id}`} className="block"> {/* Link still uses ID, we'll change this to slug later */}
+                      {/* === REGULAR POST LINK FIX === */}
+                      <Link to={`/blog/${post.slug}`} className="block"> {/* Changed from ID to SLUG! */}
                         <div className="relative h-48 overflow-hidden">
                           <img
                             src={getImageWithFallback(post.image)}
                             alt={post.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             onError={(e) => {
-                              console.log('Post image failed to load:', e.target.src)
+                              // console.log('Post image failed to load:', e.target.src) // Commented out
                               e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
                             }}
                           />
@@ -294,14 +285,12 @@ const Blog = () => {
                   <div className="text-center py-12 col-span-full">
                     <p className="text-xl text-medium-grey">
                       No articles found matching your criteria. Try adjusting your search or category filter.
-                      {/* You might want to add a message here if no posts are returned initially */}
                       {!loading && !error && allBlogPosts.length === 0 && (
                           <p className="mt-4">It looks like there are no blog posts to display yet. Time to add some to your CMS!</p>
                       )}
                     </p>
                   </div>
                 )}
-                {/* === MODIFICATION END === */}
               </motion.div>
             </div>
           </section>
