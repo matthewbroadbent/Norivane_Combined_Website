@@ -1,15 +1,82 @@
 import React from 'react'
-import { useParams, Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'; // Add useState and useEffect imports at the top if not there
+import { useParams, Navigate, Link } from 'react-router-dom' // <--- Add Link here!
 import { motion } from 'framer-motion'
 import { Calendar, User, ArrowLeft, Tag, Clock } from 'lucide-react'
 import { useBlog } from '../contexts/BlogContext'
 
 const BlogPost = () => {
-  const { id } = useParams()
-  const { getPublishedPosts } = useBlog()
-  
-  const blogPosts = getPublishedPosts()
-  const post = blogPosts.find(p => p.id === parseInt(id))
+  const { slug } = useParams();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { getPublishedPosts, getBlogPostBySlug } = useBlog();
+  const [allPublishedPosts, setAllPublishedPosts] = useState([]);
+
+  useEffect(() => {
+  const fetchAllPosts = async () => {
+  try {
+    const posts = await getPublishedPosts(); // Use the tool to get all posts
+    setAllPublishedPosts(posts); // Put them in our new 'allPublishedPosts' box
+  } catch (err) {
+    // console.error("Failed to load all published posts:", err);
+    // This just tells us if something went wrong in the console
+  }
+};
+
+
+
+    const fetchSinglePost = async () => {
+    if (!slug) { // Don't fetch if slug is not available
+      setLoading(false);
+      setError("No slug provided for blog post.");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const fetchedPost = await getBlogPostBySlug(slug); // Use the new function!
+      if (fetchedPost) {
+        setPost(fetchedPost);
+      } else {
+        // If post not found or API returned null (e.g., 404 handled by context)
+        setError("Blog post not found.");
+        setPost(null); // Ensure post is null
+      }
+    } catch (err) {
+      setError("Failed to load blog post.");
+      setPost(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchSinglePost();
+  fetchAllPosts(); // <--- Add this line!
+}, [slug, getBlogPostBySlug, getPublishedPosts]);
+
+ // Dependencies: re-run if slug or the fetch function changes
+
+ if (loading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center pt-16">
+      <p className="text-xl text-gray-700">Loading blog post, please wait...</p>
+    </div>
+  );
+}
+if (error) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center pt-16">
+      <p className="text-xl text-red-500 mb-4">{error}</p>
+      <button
+        onClick={() => window.history.back()}
+        className="px-6 py-3 bg-teal text-white rounded-full font-semibold hover:bg-darker-teal transition-colors"
+      >
+        Go Back
+      </button>
+    </div>
+  );
+}
 
   if (!post) {
     return <Navigate to="/blog" replace />
@@ -139,7 +206,7 @@ const BlogPost = () => {
               alt={post.title}
               className="w-full h-96 object-cover rounded-2xl shadow-2xl"
               onError={(e) => {
-                console.log('Image failed to load:', e.target.src)
+              //  console.log('Image failed to load:', e.target.src)
                 e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop'
               }}
             />
@@ -164,43 +231,43 @@ const BlogPost = () => {
         </div>
       </section>
 
-      {/* Related Posts */}
+{/* Related Posts */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-dark-blue mb-8">Related Articles</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts
+            {allPublishedPosts // Using the allPublishedPosts you successfully set up!
               .filter(p => p.id !== post.id && p.category === post.category)
               .slice(0, 3)
               .map((relatedPost) => (
-                <motion.article
-                  key={relatedPost.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group cursor-pointer"
-                  onClick={() => window.location.href = `/blog/${relatedPost.id}`}
-                >
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={relatedPost.image || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'}
-                      alt={relatedPost.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
-                      }}
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold text-dark-blue mb-2 group-hover:text-teal transition-colors duration-200">
-                      {relatedPost.title}
-                    </h3>
-                    <p className="text-medium-grey text-sm">
-                      {relatedPost.excerpt.substring(0, 100)}...
-                    </p>
-                  </div>
-                </motion.article>
+                <Link to={`/blog/${relatedPost.slug}`} className="block" key={relatedPost.id}>
+                  <motion.article
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group cursor-pointer"
+                  >
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={relatedPost.image || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'}
+                        alt={relatedPost.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
+                        }}
+                      />
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-lg font-bold text-dark-blue mb-2 group-hover:text-teal transition-colors duration-200">
+                        {relatedPost.title}
+                      </h3>
+                      <p className="text-medium-grey text-sm">
+                        {relatedPost.excerpt.substring(0, 100)}...
+                      </p>
+                    </div>
+                  </motion.article>
+                </Link>
               ))}
           </div>
         </div>
