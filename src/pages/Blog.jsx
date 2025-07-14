@@ -2,19 +2,26 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Search, Calendar, User, ArrowRight, Tag } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useBlog } from '../contexts/BlogContext'
+import { useBlog } from '../contexts/BlogContext' // This import stays the same
 import SEOHelmet from '../components/SEOHelmet'
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation'
 
 const Blog = () => {
-  const { getPublishedPosts } = useBlog()
+  // === MODIFICATION START ===
+  // Destructure blogPosts, loading, and error from useBlog()
+  const { blogPosts: allBlogPosts, loading, error } = useBlog(); 
+  // We'll rename it to allBlogPosts to avoid conflict with the filtered version
+  // === MODIFICATION END ===
+
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
   const categories = ['All', 'Exit Planning', 'AI Solutions', 'Business Growth', 'Thought Leadership']
-  const blogPosts = getPublishedPosts()
-
-  const filteredPosts = blogPosts.filter(post => {
+  
+  // === MODIFICATION START ===
+  // blogPosts now references the data from the context (allBlogPosts)
+  const filteredPosts = allBlogPosts.filter(post => { 
+  // === MODIFICATION END ===
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory
@@ -129,148 +136,177 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* Featured Post */}
-      {featuredPost && (
-        <section className="py-16 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              variants={fadeInUp}
-              className="bg-white rounded-2xl shadow-xl overflow-hidden"
-            >
-              <div className="grid md:grid-cols-2 gap-0">
-                <div className="relative h-64 md:h-full">
-                  <img
-                    src={getImageWithFallback(featuredPost.image)}
-                    alt={featuredPost.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      console.log('Featured image failed to load:', e.target.src)
-                      e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
-                    }}
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-teal text-white px-3 py-1 rounded-full text-sm font-semibold">
-                      Featured
-                    </span>
-                  </div>
-                </div>
-                <div className="p-8 flex flex-col justify-center">
-                  <div className="flex items-center space-x-4 text-sm text-medium-grey mb-4">
-                    <span className="flex items-center space-x-1">
-                      <Tag size={16} />
-                      <span>{featuredPost.category}</span>
-                    </span>
-                    <span className="flex items-center space-x-1">
-                      <Calendar size={16} />
-                      <span>{new Date(featuredPost.date).toLocaleDateString()}</span>
-                    </span>
-                    <span>{featuredPost.readTime}</span>
-                  </div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-dark-blue mb-4">
-                    {featuredPost.title}
-                  </h2>
-                  <p className="text-medium-grey mb-6 leading-relaxed">
-                    {featuredPost.excerpt}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-teal/10 rounded-full flex items-center justify-center">
-                        <User size={20} className="text-teal" />
-                      </div>
-                      <span className="font-semibold text-dark-blue">{featuredPost.author}</span>
-                    </div>
-                    <Link 
-                      to={`/blog/${featuredPost.id}`}
-                      className="flex items-center space-x-2 text-teal font-semibold hover:text-teal/80 transition-colors duration-200"
-                    >
-                      <span>Read More</span>
-                      <ArrowRight size={16} />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+      {/* === MODIFICATION START === */}
+      {/* Conditional Rendering for Loading and Error States */}
+      {loading && (
+        <section className="py-16 text-center text-dark-blue">
+          <p className="text-xl">Loading blog posts... please wait.</p>
+          {/* You could add a spinner here if you like! */}
         </section>
       )}
 
-      {/* Blog Posts Grid */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {regularPosts.map((post) => (
-              <motion.article
-                key={post.id}
-                variants={fadeInUp}
-                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group"
-              >
-                <Link to={`/blog/${post.id}`} className="block">
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={getImageWithFallback(post.image)}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        console.log('Post image failed to load:', e.target.src)
-                        e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
-                      }}
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-dark-blue/80 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                        {post.category}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center space-x-4 text-sm text-medium-grey mb-3">
-                      <span className="flex items-center space-x-1">
-                        <Calendar size={14} />
-                        <span>{new Date(post.date).toLocaleDateString()}</span>
-                      </span>
-                      <span>{post.readTime}</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-dark-blue mb-3 group-hover:text-teal transition-colors duration-200">
-                      {post.title}
-                    </h3>
-                    <p className="text-medium-grey mb-4 leading-relaxed">
-                      {post.excerpt}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-teal/10 rounded-full flex items-center justify-center">
-                          <User size={16} className="text-teal" />
-                        </div>
-                        <span className="text-sm font-semibold text-dark-blue">{post.author}</span>
-                      </div>
-                      <div className="flex items-center space-x-1 text-teal font-semibold hover:text-teal/80 transition-colors duration-200">
-                        <span className="text-sm">Read</span>
-                        <ArrowRight size={14} />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </motion.article>
-            ))}
-          </motion.div>
+      {error && (
+        <section className="py-16 text-center text-red-600">
+          <p className="text-xl">Error: {error}</p>
+          <p className="text-lg">Could not load blog posts. Please check your internet connection or try again later.</p>
+        </section>
+      )}
+      {/* === MODIFICATION END === */}
 
-          {filteredPosts.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-xl text-medium-grey">
-                No articles found matching your criteria. Try adjusting your search or category filter.
-              </p>
-            </div>
+      {/* Only render blog content if not loading and no error */}
+      {!loading && !error && (
+        <>
+          {/* Featured Post */}
+          {featuredPost && (
+            <section className="py-16 bg-gray-50">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <motion.div
+                  initial="initial"
+                  whileInView="animate"
+                  viewport={{ once: true }}
+                  variants={fadeInUp}
+                  className="bg-white rounded-2xl shadow-xl overflow-hidden"
+                >
+                  <div className="grid md:grid-cols-2 gap-0">
+                    <div className="relative h-64 md:h-full">
+                      <img
+                        src={getImageWithFallback(featuredPost.image)}
+                        alt={featuredPost.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          console.log('Featured image failed to load:', e.target.src)
+                          e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
+                        }}
+                      />
+                      <div className="absolute top-4 left-4">
+                        <span className="bg-teal text-white px-3 py-1 rounded-full text-sm font-semibold">
+                          Featured
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-8 flex flex-col justify-center">
+                      <div className="flex items-center space-x-4 text-sm text-medium-grey mb-4">
+                        <span className="flex items-center space-x-1">
+                          <Tag size={16} />
+                          <span>{featuredPost.category}</span>
+                        </span>
+                        <span className="flex items-center space-x-1">
+                          <Calendar size={16} />
+                          <span>{new Date(featuredPost.date).toLocaleDateString()}</span>
+                        </span>
+                        <span>{featuredPost.readTime}</span>
+                      </div>
+                      <h2 className="text-2xl md:text-3xl font-bold text-dark-blue mb-4">
+                        {featuredPost.title}
+                      </h2>
+                      <p className="text-medium-grey mb-6 leading-relaxed">
+                        {featuredPost.excerpt}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-teal/10 rounded-full flex items-center justify-center">
+                            <User size={20} className="text-teal" />
+                          </div>
+                          <span className="font-semibold text-dark-blue">{featuredPost.author}</span>
+                        </div>
+                        <Link 
+                          to={`/blog/${featuredPost.id}`} // Link still uses ID, we'll change this to slug later
+                          className="flex items-center space-x-2 text-teal font-semibold hover:text-teal/80 transition-colors duration-200"
+                        >
+                          <span>Read More</span>
+                          <ArrowRight size={16} />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </section>
           )}
-        </div>
-      </section>
+
+          {/* Blog Posts Grid */}
+          <section className="py-16 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <motion.div
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+                variants={staggerChildren}
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+              >
+                {/* === MODIFICATION START === */}
+                {/* Only render regular posts if there are any */}
+                {regularPosts.length > 0 ? (
+                  regularPosts.map((post) => (
+                    <motion.article
+                      key={post.id} // Key still uses ID, we'll change this to slug later
+                      variants={fadeInUp}
+                      className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group"
+                    >
+                      <Link to={`/blog/${post.id}`} className="block"> {/* Link still uses ID, we'll change this to slug later */}
+                        <div className="relative h-48 overflow-hidden">
+                          <img
+                            src={getImageWithFallback(post.image)}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            onError={(e) => {
+                              console.log('Post image failed to load:', e.target.src)
+                              e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
+                            }}
+                          />
+                          <div className="absolute top-4 left-4">
+                            <span className="bg-dark-blue/80 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                              {post.category}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-6">
+                          <div className="flex items-center space-x-4 text-sm text-medium-grey mb-3">
+                            <span className="flex items-center space-x-1">
+                              <Calendar size={14} />
+                              <span>{new Date(post.date).toLocaleDateString()}</span>
+                            </span>
+                            <span>{post.readTime}</span>
+                          </div>
+                          <h3 className="text-xl font-bold text-dark-blue mb-3 group-hover:text-teal transition-colors duration-200">
+                            {post.title}
+                          </h3>
+                          <p className="text-medium-grey mb-4 leading-relaxed">
+                            {post.excerpt}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-8 h-8 bg-teal/10 rounded-full flex items-center justify-center">
+                                <User size={16} className="text-teal" />
+                              </div>
+                              <span className="text-sm font-semibold text-dark-blue">{post.author}</span>
+                            </div>
+                            <div className="flex items-center space-x-1 text-teal font-semibold hover:text-teal/80 transition-colors duration-200">
+                              <span className="text-sm">Read</span>
+                              <ArrowRight size={14} />
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.article>
+                  ))
+                ) : (
+                  <div className="text-center py-12 col-span-full">
+                    <p className="text-xl text-medium-grey">
+                      No articles found matching your criteria. Try adjusting your search or category filter.
+                      {/* You might want to add a message here if no posts are returned initially */}
+                      {!loading && !error && allBlogPosts.length === 0 && (
+                          <p className="mt-4">It looks like there are no blog posts to display yet. Time to add some to your CMS!</p>
+                      )}
+                    </p>
+                  </div>
+                )}
+                {/* === MODIFICATION END === */}
+              </motion.div>
+            </div>
+          </section>
+        </>
+      )}
 
       {/* Newsletter CTA */}
       <section className="py-16 gradient-bg text-white">
