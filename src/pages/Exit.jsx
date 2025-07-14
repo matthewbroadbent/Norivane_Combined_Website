@@ -1,398 +1,390 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { TrendingUp, ArrowRight, CheckCircle, Users, Shield, Clock, Target, DollarSign, FileText, Handshake } from 'lucide-react'
-import BookingModal from '../components/BookingModal'
-import FAQSection from '../components/FAQSection'
+import { 
+  Target, 
+  TrendingUp, 
+  Shield, 
+  Clock, 
+  Users, 
+  ArrowRight,
+  CheckCircle,
+  DollarSign,
+  FileText,
+  Award
+} from 'lucide-react'
 import SEOHelmet from '../components/SEOHelmet'
-import { exitFAQs } from '../data/faqData'
+import BreadcrumbNavigation from '../components/BreadcrumbNavigation'
+import BookingModal from '../components/BookingModal'
 
 const Exit = () => {
   const [showBookingModal, setShowBookingModal] = useState(false)
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 60 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
-  }
-
-  const staggerChildren = {
-    animate: {
-      transition: {
-        staggerChildren: 0.1
-      }
+  const exitServices = [
+    {
+      icon: <DollarSign size={32} />,
+      title: "Business Valuation",
+      description: "Comprehensive valuation analysis to maximise your business worth and identify value drivers.",
+      benefits: ["Professional valuation report", "Value optimisation strategies", "Market positioning analysis"]
+    },
+    {
+      icon: <FileText size={32} />,
+      title: "Exit Strategy Planning",
+      description: "Develop a comprehensive exit strategy tailored to your goals, timeline, and market conditions.",
+      benefits: ["Custom exit roadmap", "Tax optimisation", "Risk mitigation planning"]
+    },
+    {
+      icon: <Award size={32} />,
+      title: "Deal Execution",
+      description: "Expert guidance through negotiations, due diligence, and closing to ensure optimal outcomes.",
+      benefits: ["Buyer identification", "Negotiation support", "Transaction management"]
     }
-  }
+  ]
+
+  const exitOptions = [
+    {
+      title: "Strategic Sale",
+      description: "Sell to a strategic buyer who values your business synergies",
+      timeline: "6-12 months",
+      valuation: "Premium valuations",
+      bestFor: "Established businesses with unique assets"
+    },
+    {
+      title: "Financial Sale",
+      description: "Sell to private equity or financial buyers focused on returns",
+      timeline: "4-8 months", 
+      valuation: "Market valuations",
+      bestFor: "Profitable businesses with growth potential"
+    },
+    {
+      title: "Management Buyout",
+      description: "Transfer ownership to existing management team",
+      timeline: "3-6 months",
+      valuation: "Fair market value",
+      bestFor: "Businesses with strong management teams"
+    },
+    {
+      title: "Employee Ownership",
+      description: "Transition to employee ownership through EOT or similar",
+      timeline: "6-18 months",
+      valuation: "Tax-advantaged",
+      bestFor: "Businesses with engaged workforce"
+    }
+  ]
+
+  const valuationFactors = [
+    "Financial performance and trends",
+    "Market position and competitive advantages", 
+    "Management team strength",
+    "Customer base diversity and loyalty",
+    "Operational efficiency and scalability",
+    "Industry growth prospects",
+    "Asset quality and condition",
+    "Risk factors and mitigation strategies"
+  ]
+
+  const breadcrumbs = [
+    { label: 'Exit Planning', url: null }
+  ]
 
   return (
     <div className="min-h-screen">
       <SEOHelmet 
-        title="Strategic Exit Planning | Maximize Business Value | Norivane"
-        description="Expert exit planning services to maximize your business valuation. 3x higher valuations, confidential process, end-to-end support. Plan your perfect business exit."
-        keywords="exit planning, business valuation, sell business, M&A advisory, business exit strategy, company sale"
+        title="Business Exit Planning Services | Maximise Your Business Sale | Norivane"
+        description="Expert business exit planning and valuation services. Maximise your business sale value with strategic exit planning. 3x higher valuations achieved."
+        keywords="business exit planning, business valuation, sell business, exit strategy, business sale, transaction advisory, business broker, exit consulting"
         canonicalUrl="/exit"
       />
 
+      <BreadcrumbNavigation customBreadcrumbs={breadcrumbs} />
+
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 gradient-bg"></div>
-        <div className="absolute inset-0 bg-black/20"></div>
-        
-        {/* Animated Background Elements */}
+      <section className="relative py-20 gradient-bg text-white overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-float"></div>
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-teal/10 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white pt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              Maximize Your Business Value<br />
-              with <span className="text-teal">Strategic Exit Planning</span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto text-gray-200 leading-relaxed">
-              Plan the perfect exit strategy and achieve 3x higher valuations. From business 
-              optimization to buyer identification and deal execution—we handle everything.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-              <button
-                onClick={() => setShowBookingModal(true)}
-                className="group bg-white text-dark-blue px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 flex items-center space-x-2 shadow-xl hover:shadow-2xl transform hover:scale-105"
-              >
-                <TrendingUp size={20} />
-                <span>Get Your Business Valued</span>
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-200" />
-              </button>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                Plan Your Perfect 
+                <span className="text-teal"> Business Exit</span>
+              </h1>
               
-              <div className="text-white/80 text-sm">
-                <div className="flex items-center space-x-2 mb-1">
-                  <CheckCircle size={16} className="text-teal" />
-                  <span>Confidential process</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle size={16} className="text-teal" />
-                  <span>No upfront fees</span>
-                </div>
-              </div>
-            </div>
+              <p className="text-xl mb-8 text-gray-200 leading-relaxed">
+                Ready to sell? We help you maximise your business value and navigate 
+                the complex exit process. From valuation optimisation to deal closure, 
+                we ensure you get the best possible outcome for your life's work.
+              </p>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">3x</div>
-                <div className="text-sm text-gray-300">Higher Valuations</div>
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <button
+                  onClick={() => setShowBookingModal(true)}
+                  className="bg-white text-dark-blue px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors duration-200 flex items-center justify-center space-x-2"
+                >
+                  <span>Get Business Valuation</span>
+                  <ArrowRight size={20} />
+                </button>
+                
+                <a
+                  href="#exit-options"
+                  className="border border-white/30 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/10 transition-colors duration-200 flex items-center justify-center space-x-2"
+                >
+                  <span>Explore Exit Options</span>
+                  <Target size={20} />
+                </a>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">£2.4M</div>
-                <div className="text-sm text-gray-300">Average Exit Value</div>
+
+              <div className="grid grid-cols-3 gap-6 text-center">
+                <div>
+                  <div className="text-3xl font-bold text-teal mb-1">3x</div>
+                  <div className="text-sm text-gray-300">Higher Valuations</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-teal mb-1">95%</div>
+                  <div className="text-sm text-gray-300">Success Rate</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-teal mb-1">£2.4M</div>
+                  <div className="text-sm text-gray-300">Average Exit Value</div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">18</div>
-                <div className="text-sm text-gray-300">Months Average Process</div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative"
+            >
+              <img
+                src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Business exit planning and strategy consultation"
+                className="rounded-2xl shadow-2xl w-full h-auto"
+              />
+              
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl p-6 shadow-xl">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-dark-blue/10 rounded-full flex items-center justify-center">
+                    <Target size={24} className="text-dark-blue" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-dark-blue">Strategic</div>
+                    <div className="text-sm text-medium-grey">Exit Planning</div>
+                  </div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">95%</div>
-                <div className="text-sm text-gray-300">Successful Exits</div>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Process Section */}
+      {/* Exit Services Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial="initial"
-            whileInView="animate"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={staggerChildren}
             className="text-center mb-16"
           >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
-              Our Proven Exit Planning Process
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl text-medium-grey max-w-3xl mx-auto">
-              A systematic approach to maximizing your business value and ensuring a successful exit.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
-          >
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-dark-blue/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Target size={32} className="text-dark-blue" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">1. Assessment</h3>
-              <p className="text-medium-grey">
-                Comprehensive business valuation and identification of value optimization opportunities.
-              </p>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <TrendingUp size={32} className="text-teal" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">2. Optimization</h3>
-              <p className="text-medium-grey">
-                Strategic improvements to operations, financials, and market positioning to maximize value.
-              </p>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-dark-blue/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Users size={32} className="text-dark-blue" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">3. Marketing</h3>
-              <p className="text-medium-grey">
-                Confidential buyer identification and competitive marketing to qualified prospects.
-              </p>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Handshake size={32} className="text-teal" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">4. Execution</h3>
-              <p className="text-medium-grey">
-                Negotiation, due diligence management, and deal closure with optimal terms.
-              </p>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="text-center mb-16"
-          >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
               Comprehensive Exit Planning Services
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl text-medium-grey max-w-3xl mx-auto">
-              Everything you need for a successful business exit, from initial planning to final closure.
-            </motion.p>
+            </h2>
+            <p className="text-xl text-medium-grey max-w-3xl mx-auto">
+              From initial valuation to final handshake, we guide you through every 
+              step of your business exit journey with expert precision and care.
+            </p>
           </motion.div>
 
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="w-12 h-12 bg-dark-blue/10 rounded-lg flex items-center justify-center mb-6">
-                <DollarSign size={24} className="text-dark-blue" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Business Valuation</h3>
-              <p className="text-medium-grey mb-4">
-                Professional valuation using multiple methodologies to determine accurate market value.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Discounted cash flow analysis</li>
-                <li>• Market comparable assessment</li>
-                <li>• Asset-based valuation</li>
-                <li>• Strategic value identification</li>
-              </ul>
-            </motion.div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {exitServices.map((service, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-gray-50 rounded-2xl p-8 hover:shadow-xl transition-shadow duration-300"
+              >
+                <div className="w-16 h-16 bg-dark-blue/10 rounded-full flex items-center justify-center mb-6 text-dark-blue">
+                  {service.icon}
+                </div>
+                
+                <h3 className="text-2xl font-bold text-dark-blue mb-4">
+                  {service.title}
+                </h3>
+                
+                <p className="text-medium-grey mb-6 leading-relaxed">
+                  {service.description}
+                </p>
 
-            <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="w-12 h-12 bg-teal/10 rounded-lg flex items-center justify-center mb-6">
-                <TrendingUp size={24} className="text-teal" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Value Optimization</h3>
-              <p className="text-medium-grey mb-4">
-                Strategic improvements to maximize your business value before going to market.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Revenue growth strategies</li>
-                <li>• Cost optimization</li>
-                <li>• Process systematization</li>
-                <li>• Management team development</li>
-              </ul>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="w-12 h-12 bg-dark-blue/10 rounded-lg flex items-center justify-center mb-6">
-                <Users size={24} className="text-dark-blue" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Buyer Identification</h3>
-              <p className="text-medium-grey mb-4">
-                Access to our extensive network of qualified buyers and strategic partners.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Strategic buyers</li>
-                <li>• Private equity firms</li>
-                <li>• Individual investors</li>
-                <li>• International buyers</li>
-              </ul>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="w-12 h-12 bg-teal/10 rounded-lg flex items-center justify-center mb-6">
-                <FileText size={24} className="text-teal" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Due Diligence</h3>
-              <p className="text-medium-grey mb-4">
-                Comprehensive preparation and management of the due diligence process.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Data room preparation</li>
-                <li>• Financial documentation</li>
-                <li>• Legal compliance review</li>
-                <li>• Buyer question management</li>
-              </ul>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="w-12 h-12 bg-dark-blue/10 rounded-lg flex items-center justify-center mb-6">
-                <Handshake size={24} className="text-dark-blue" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Deal Negotiation</h3>
-              <p className="text-medium-grey mb-4">
-                Expert negotiation to secure the best possible terms and deal structure.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Price negotiation</li>
-                <li>• Deal structure optimization</li>
-                <li>• Terms and conditions</li>
-                <li>• Risk mitigation</li>
-              </ul>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="w-12 h-12 bg-teal/10 rounded-lg flex items-center justify-center mb-6">
-                <Shield size={24} className="text-teal" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Post-Sale Support</h3>
-              <p className="text-medium-grey mb-4">
-                Ongoing support to ensure a smooth transition and successful integration.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Transition planning</li>
-                <li>• Integration support</li>
-                <li>• Earnout management</li>
-                <li>• Ongoing advisory</li>
-              </ul>
-            </motion.div>
-          </motion.div>
+                <ul className="space-y-2">
+                  {service.benefits.map((benefit, idx) => (
+                    <li key={idx} className="flex items-center space-x-3">
+                      <CheckCircle size={16} className="text-dark-blue flex-shrink-0" />
+                      <span className="text-dark-grey">{benefit}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section className="py-20 bg-white">
+      {/* Exit Options Section */}
+      <section id="exit-options" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial="initial"
-            whileInView="animate"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={staggerChildren}
             className="text-center mb-16"
           >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
-              Why Choose Norivane for Your Exit
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl text-medium-grey max-w-3xl mx-auto">
-              Our expertise and proven track record deliver superior results for business owners.
-            </motion.p>
+            <h2 className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
+              Choose Your Exit Path
+            </h2>
+            <p className="text-xl text-medium-grey max-w-3xl mx-auto">
+              Different exit strategies suit different goals. We help you choose 
+              the path that maximises value and aligns with your objectives.
+            </p>
           </motion.div>
 
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="grid md:grid-cols-3 gap-8"
-          >
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-dark-blue/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Users size={32} className="text-dark-blue" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Expert Team</h3>
-              <p className="text-medium-grey">
-                Deloitte-trained chartered accountants with deep M&A experience and proven track record.
-              </p>
-            </motion.div>
+          <div className="grid md:grid-cols-2 gap-8">
+            {exitOptions.map((option, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300"
+              >
+                <h3 className="text-2xl font-bold text-dark-blue mb-4">
+                  {option.title}
+                </h3>
+                
+                <p className="text-medium-grey mb-6 leading-relaxed">
+                  {option.description}
+                </p>
 
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Shield size={32} className="text-teal" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Confidential Process</h3>
-              <p className="text-medium-grey">
-                Strict confidentiality protocols to protect your business and employees throughout the process.
-              </p>
-            </motion.div>
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <div className="text-sm font-semibold text-dark-blue mb-1">Timeline</div>
+                    <div className="text-medium-grey">{option.timeline}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-dark-blue mb-1">Valuation</div>
+                    <div className="text-medium-grey">{option.valuation}</div>
+                  </div>
+                </div>
 
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-dark-blue/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Clock size={32} className="text-dark-blue" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Proven Results</h3>
-              <p className="text-medium-grey">
-                95% success rate with average valuations 3x higher than initial estimates.
-              </p>
-            </motion.div>
-          </motion.div>
+                <div className="border-t pt-4">
+                  <div className="text-sm font-semibold text-dark-blue mb-2">Best For:</div>
+                  <div className="text-medium-grey">{option.bestFor}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <FAQSection 
-        faqs={exitFAQs}
-        title="Exit Planning Questions"
-        subtitle="Get answers to common questions about our strategic exit planning process."
-      />
+      {/* Valuation Factors */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
+                What Drives Your Business Value?
+              </h2>
+              <p className="text-xl text-medium-grey mb-8 leading-relaxed">
+                Understanding the key factors that influence your business valuation 
+                is crucial for maximising your exit value. We analyse every aspect 
+                to identify opportunities for improvement.
+              </p>
+
+              <div className="space-y-3">
+                {valuationFactors.map((factor, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="flex items-center space-x-3"
+                  >
+                    <CheckCircle size={20} className="text-teal flex-shrink-0" />
+                    <span className="text-dark-grey">{factor}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <img
+                src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Business valuation analysis and financial planning"
+                className="rounded-2xl shadow-xl w-full h-auto"
+              />
+              
+              <div className="absolute -top-6 -right-6 bg-teal text-white rounded-xl p-6 shadow-xl">
+                <div className="text-center">
+                  <div className="text-2xl font-bold mb-1">£2.4M</div>
+                  <div className="text-sm opacity-90">Average Exit</div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="py-20 gradient-bg text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial="initial"
-            whileInView="animate"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={staggerChildren}
           >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold mb-6">
-              Ready to Plan Your Exit?
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl mb-8 max-w-2xl mx-auto text-gray-200">
-              Get a confidential business valuation and learn how we can help you achieve 
-              the exit you deserve. No obligations, just expert insights.
-            </motion.p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Ready to Plan Your Perfect Exit?
+            </h2>
+            <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-200">
+              Your business represents years of hard work. Let us help you maximise 
+              its value and ensure a smooth, profitable exit that secures your future.
+            </p>
 
-            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <button
                 onClick={() => setShowBookingModal(true)}
-                className="bg-white text-dark-blue px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors duration-200 flex items-center space-x-2 shadow-xl"
+                className="bg-white text-dark-blue px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors duration-200 flex items-center space-x-2"
               >
-                <span>Get Your Free Valuation</span>
+                <span>Get Free Business Valuation</span>
                 <ArrowRight size={20} />
               </button>
               
-              <div className="text-white/80 text-sm">
-                <div className="flex items-center space-x-2">
-                  <Shield size={16} className="text-teal" />
-                  <span>Completely confidential</span>
-                </div>
-              </div>
-            </motion.div>
+              <a
+                href="tel:+44-123-456-7890"
+                className="text-white hover:text-teal border-b-2 border-transparent hover:border-teal font-semibold text-lg transition-all duration-300"
+              >
+                Or call us directly
+              </a>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -401,7 +393,7 @@ const Exit = () => {
       <BookingModal 
         isOpen={showBookingModal} 
         onClose={() => setShowBookingModal(false)}
-        consultationType="Exit Planning Consultation"
+        consultationType="Business Exit Planning Consultation"
       />
     </div>
   )

@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Lock, User, AlertCircle } from 'lucide-react'
+import { Lock, User, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const AdminLogin = () => {
-  const [credentials, setCredentials] = useState({ email: '', password: '' })
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  
   const { login } = useAuth()
   const navigate = useNavigate()
 
@@ -16,98 +19,98 @@ const AdminLogin = () => {
     setIsLoading(true)
     setError('')
 
-    try {
-      const success = login(credentials)
-      if (success) {
-        navigate('/admin/dashboard')
-      } else {
-        setError('Invalid email or password')
-      }
-    } catch (err) {
-      setError('Login failed. Please try again.')
-    } finally {
-      setIsLoading(false)
-    }
-  }
+    // Simulate loading delay
+    await new Promise(resolve => setTimeout(resolve, 1000))
 
-  const handleChange = (e) => {
-    setCredentials({
-      ...credentials,
-      [e.target.name]: e.target.value
-    })
+    const success = login(username, password)
+    
+    if (success) {
+      navigate('/admin/dashboard')
+    } else {
+      setError('Invalid username or password')
+    }
+    
+    setIsLoading(false)
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-blue to-teal flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-dark-blue via-dark-blue/90 to-teal flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
         className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Lock size={32} className="text-teal" />
+          <div className="bg-teal/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Lock className="text-teal" size={32} />
           </div>
-          <h1 className="text-2xl font-bold text-dark-blue">Admin Login</h1>
-          <p className="text-medium-grey mt-2">Access the admin dashboard</p>
+          <h1 className="text-2xl font-bold text-dark-blue mb-2">Admin Login</h1>
+          <p className="text-medium-grey">Access the blog management system</p>
         </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-center space-x-2">
-            <AlertCircle size={20} className="text-red-600" />
-            <span className="text-red-700">{error}</span>
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-semibold text-dark-blue mb-2">
-              Email Address
+            <label className="block text-sm font-medium text-dark-blue mb-2">
+              Username
             </label>
             <div className="relative">
-              <User size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-medium-grey" />
+              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-medium-grey" size={20} />
               <input
-                type="email"
-                name="email"
-                value={credentials.email}
-                onChange={handleChange}
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
+                placeholder="Enter username"
                 required
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal/20 focus:border-teal transition-colors duration-200"
-                placeholder="admin@norivane.com"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-dark-blue mb-2">
+            <label className="block text-sm font-medium text-dark-blue mb-2">
               Password
             </label>
             <div className="relative">
-              <Lock size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-medium-grey" />
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-medium-grey" size={20} />
               <input
-                type="password"
-                name="password"
-                value={credentials.password}
-                onChange={handleChange}
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
+                placeholder="Enter password"
                 required
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal/20 focus:border-teal transition-colors duration-200"
-                placeholder="Enter your password"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-medium-grey hover:text-dark-blue"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
           </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-teal hover:bg-teal/90 disabled:bg-teal/50 text-white py-3 rounded-lg font-semibold transition-colors duration-200"
+            className="w-full bg-teal text-white py-3 rounded-lg font-semibold hover:bg-teal/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Signing in...' : 'Sign In'}
+            {isLoading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+          <h3 className="font-semibold text-dark-blue mb-2">Demo Credentials:</h3>
           <p className="text-sm text-medium-grey">
-            Demo credentials: admin@norivane.com / admin123
+            <strong>Username:</strong> admin<br />
+            <strong>Password:</strong> norivane2024!
           </p>
         </div>
       </motion.div>

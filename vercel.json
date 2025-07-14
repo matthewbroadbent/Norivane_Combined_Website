@@ -1,16 +1,8 @@
 {
-  "functions": {
-    "api/blog/posts.js": {
-      "runtime": "nodejs18.x"
-    },
-    "api/blog/[slug].js": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "rewrites": [
     {
-      "source": "/blog/:slug",
-      "destination": "/blog/[slug].html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

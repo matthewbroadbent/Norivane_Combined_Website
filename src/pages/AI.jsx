@@ -1,230 +1,242 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Zap, ArrowRight, CheckCircle, Bot, BarChart3, Cog, Brain, MessageSquare, TrendingUp, Clock, Shield, Target } from 'lucide-react'
-import BookingModal from '../components/BookingModal'
-import FAQSection from '../components/FAQSection'
+import { 
+  Zap, 
+  TrendingUp, 
+  Users, 
+  Clock, 
+  Shield, 
+  ArrowRight,
+  CheckCircle,
+  BarChart3,
+  Lightbulb,
+  Cog
+} from 'lucide-react'
 import SEOHelmet from '../components/SEOHelmet'
-import AIBenefits from '../components/AIBenefits'
-import { aiFAQs } from '../data/faqData'
+import BreadcrumbNavigation from '../components/BreadcrumbNavigation'
+import BookingModal from '../components/BookingModal'
 
 const AI = () => {
   const [showBookingModal, setShowBookingModal] = useState(false)
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 60 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
-  }
-
-  const staggerChildren = {
-    animate: {
-      transition: {
-        staggerChildren: 0.1
-      }
+  const aiServices = [
+    {
+      icon: <BarChart3 size={32} />,
+      title: "Process Automation",
+      description: "Streamline repetitive tasks and workflows with intelligent automation that saves hours daily.",
+      benefits: ["40% time savings", "Reduced errors", "24/7 operation"]
+    },
+    {
+      icon: <Lightbulb size={32} />,
+      title: "Customer Intelligence",
+      description: "Unlock deep customer insights with AI-powered analytics that drive revenue growth.",
+      benefits: ["Personalised experiences", "Predictive analytics", "Higher conversion rates"]
+    },
+    {
+      icon: <Cog size={32} />,
+      title: "Operational Optimisation",
+      description: "Optimise your operations with AI that identifies inefficiencies and suggests improvements.",
+      benefits: ["Cost reduction", "Performance insights", "Competitive advantage"]
     }
-  }
+  ]
+
+  const implementationSteps = [
+    {
+      step: "01",
+      title: "AI Readiness Assessment",
+      description: "Workshop to understand your current processes and identify the highest-impact AI opportunities."
+    },
+    {
+      step: "02", 
+      title: "Custom AI Strategy",
+      description: "Audit to develop a tailored AI implementation roadmap aligned with your business goals."
+    },
+    {
+      step: "03",
+      title: "Pilot Implementation",
+      description: "Start with a focused pilot project to demonstrate value and build confidence."
+    },
+    {
+      step: "04",
+      title: "Scale & Optimise",
+      description: "Expand successful AI solutions across your organisation with ongoing optimisation."
+    }
+  ]
+
+  const caseStudies = [
+    {
+      industry: "Manufacturing",
+      challenge: "Manual production planning taking 8 hours daily",
+      solution: "AI-powered demand forecasting and production optimisation",
+      results: ["60% planning time reduction", "35% efficiency increase", "£200K annual savings"]
+    },
+    {
+      industry: "Professional Services",
+      challenge: "Inconsistent client communication and follow-up",
+      solution: "Automated client engagement and intelligent scheduling",
+      results: ["50% faster response times", "30% more client meetings", "25% revenue increase"]
+    },
+    {
+      industry: "E-commerce",
+      challenge: "Poor product recommendations and inventory management",
+      solution: "AI-driven personalisation and demand prediction",
+      results: ["45% higher conversion rates", "20% stock reduction", "£500K revenue boost"]
+    }
+  ]
+
+  const breadcrumbs = [
+    { label: 'AI Solutions', url: null }
+  ]
 
   return (
     <div className="min-h-screen">
       <SEOHelmet 
-        title="AI Implementation Services | 40% Productivity Gains | Norivane"
-        description="Transform your business with practical AI solutions. 40% productivity improvements, 90-day implementation, 300-500% ROI. Expert AI consulting for real results."
-        keywords="AI implementation, artificial intelligence consulting, business automation, AI solutions, productivity improvement, chatbots, predictive analytics"
+        title="AI Implementation Services | Scale Your Business with AI | Norivane"
+        description="Transform your business with expert AI implementation. Process automation, customer intelligence, and operational optimisation. 40% efficiency gains guaranteed."
+        keywords="AI implementation, business automation, artificial intelligence consulting, process automation, AI solutions, business intelligence, operational optimisation"
         canonicalUrl="/ai"
       />
 
+      <BreadcrumbNavigation customBreadcrumbs={breadcrumbs} />
+
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 gradient-bg"></div>
-        <div className="absolute inset-0 bg-black/20"></div>
-        
-        {/* Animated Background Elements */}
+      <section className="relative py-20 gradient-bg text-white overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-teal/10 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+          <div className="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-teal/10 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white pt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              Transform Your Business<br />
-              with <span className="text-teal">Practical AI Solutions</span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto text-gray-200 leading-relaxed">
-              Implement AI that delivers real results. 40% productivity improvements, 
-              300-500% ROI, and measurable impact within 90 days—no technical expertise required.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-              <button
-                onClick={() => setShowBookingModal(true)}
-                className="group bg-teal hover:bg-teal/90 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 flex items-center space-x-2 shadow-xl hover:shadow-2xl transform hover:scale-105"
-              >
-                <Zap size={20} />
-                <span>Start Your AI Journey</span>
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-200" />
-              </button>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                Supercharge Your Business with 
+                <span className="text-teal"> AI That Actually Works</span>
+              </h1>
               
-              <div className="text-white/80 text-sm">
-                <div className="flex items-center space-x-2 mb-1">
-                  <CheckCircle size={16} className="text-teal" />
-                  <span>90-day results guarantee</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle size={16} className="text-teal" />
-                  <span>No technical team required</span>
-                </div>
-              </div>
-            </div>
+              <p className="text-xl mb-8 text-gray-200 leading-relaxed">
+                Stop wondering if AI can help your business. We implement proven AI solutions 
+                that deliver measurable results within 90 days. From process automation to 
+                customer intelligence, we make AI work for you.
+              </p>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">40%</div>
-                <div className="text-sm text-gray-300">Productivity Increase</div>
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <button
+                  onClick={() => setShowBookingModal(true)}
+                  className="bg-white text-dark-blue px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors duration-200 flex items-center justify-center space-x-2"
+                >
+                  <span>Get AI Assessment</span>
+                  <ArrowRight size={20} />
+                </button>
+                
+                <a
+                  href="#case-studies"
+                  className="border border-white/30 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/10 transition-colors duration-200 flex items-center justify-center space-x-2"
+                >
+                  <span>See Success Stories</span>
+                  <TrendingUp size={20} />
+                </a>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">500%</div>
-                <div className="text-sm text-gray-300">Average ROI</div>
+
+              <div className="grid grid-cols-3 gap-6 text-center">
+                <div>
+                  <div className="text-3xl font-bold text-teal mb-1">40%</div>
+                  <div className="text-sm text-gray-300">Average Time Savings</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-teal mb-1">90</div>
+                  <div className="text-sm text-gray-300">Days to ROI</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-teal mb-1">500%</div>
+                  <div className="text-sm text-gray-300">Typical ROI</div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">90</div>
-                <div className="text-sm text-gray-300">Days to Results</div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative"
+            >
+              <img
+                src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="AI and automation technology visualization"
+                className="rounded-2xl shadow-2xl w-full h-auto"
+              />
+              
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl p-6 shadow-xl">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-teal/10 rounded-full flex items-center justify-center">
+                    <Zap size={24} className="text-teal" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-dark-blue">AI-Powered</div>
+                    <div className="text-sm text-medium-grey">Business Growth</div>
+                  </div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal mb-2">24/7</div>
-                <div className="text-sm text-gray-300">AI Operations</div>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* AI Solutions Section */}
+      {/* AI Services Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial="initial"
-            whileInView="animate"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={staggerChildren}
             className="text-center mb-16"
           >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
-              AI Solutions That Drive Real Results
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl text-medium-grey max-w-3xl mx-auto">
-              We implement practical AI solutions that deliver immediate ROI and measurable business impact.
-            </motion.p>
+            <h2 className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
+              AI Solutions That Drive Results
+            </h2>
+            <p className="text-xl text-medium-grey max-w-3xl mx-auto">
+              We don't just implement AI—we deliver measurable business outcomes 
+              through strategic AI integration tailored to your specific needs.
+            </p>
           </motion.div>
 
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            <motion.div variants={fadeInUp} className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 bg-teal/10 rounded-lg flex items-center justify-center mb-6">
-                <MessageSquare size={24} className="text-teal" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Customer Service AI</h3>
-              <p className="text-medium-grey mb-4">
-                24/7 intelligent chatbots that handle 80% of customer inquiries instantly.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Instant response times</li>
-                <li>• Multilingual support</li>
-                <li>• Seamless human handoff</li>
-                <li>• 60% cost reduction</li>
-              </ul>
-            </motion.div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {aiServices.map((service, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-gray-50 rounded-2xl p-8 hover:shadow-xl transition-shadow duration-300"
+              >
+                <div className="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mb-6 text-teal">
+                  {service.icon}
+                </div>
+                
+                <h3 className="text-2xl font-bold text-dark-blue mb-4">
+                  {service.title}
+                </h3>
+                
+                <p className="text-medium-grey mb-6 leading-relaxed">
+                  {service.description}
+                </p>
 
-            <motion.div variants={fadeInUp} className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 bg-dark-blue/10 rounded-lg flex items-center justify-center mb-6">
-                <BarChart3 size={24} className="text-dark-blue" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Predictive Analytics</h3>
-              <p className="text-medium-grey mb-4">
-                Forecast sales, optimize inventory, and predict customer behavior with AI.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Sales forecasting</li>
-                <li>• Inventory optimization</li>
-                <li>• Customer insights</li>
-                <li>• Risk assessment</li>
-              </ul>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 bg-teal/10 rounded-lg flex items-center justify-center mb-6">
-                <Cog size={24} className="text-teal" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Process Automation</h3>
-              <p className="text-medium-grey mb-4">
-                Automate repetitive tasks and workflows to free up your team for strategic work.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Data entry automation</li>
-                <li>• Invoice processing</li>
-                <li>• Report generation</li>
-                <li>• Workflow optimization</li>
-              </ul>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 bg-dark-blue/10 rounded-lg flex items-center justify-center mb-6">
-                <Target size={24} className="text-dark-blue" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Marketing AI</h3>
-              <p className="text-medium-grey mb-4">
-                Personalize customer experiences and optimize marketing campaigns with AI.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Personalized content</li>
-                <li>• Lead scoring</li>
-                <li>• Campaign optimization</li>
-                <li>• Customer segmentation</li>
-              </ul>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 bg-teal/10 rounded-lg flex items-center justify-center mb-6">
-                <Brain size={24} className="text-teal" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Business Intelligence</h3>
-              <p className="text-medium-grey mb-4">
-                AI-powered insights and automated reporting for better decision making.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Automated insights</li>
-                <li>• Real-time dashboards</li>
-                <li>• Anomaly detection</li>
-                <li>• Performance monitoring</li>
-              </ul>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 bg-dark-blue/10 rounded-lg flex items-center justify-center mb-6">
-                <Bot size={24} className="text-dark-blue" />
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Custom AI Solutions</h3>
-              <p className="text-medium-grey mb-4">
-                Tailored AI solutions designed specifically for your industry and business needs.
-              </p>
-              <ul className="space-y-2 text-sm text-medium-grey">
-                <li>• Industry-specific AI</li>
-                <li>• Custom algorithms</li>
-                <li>• Integration support</li>
-                <li>• Ongoing optimization</li>
-              </ul>
-            </motion.div>
-          </motion.div>
+                <ul className="space-y-2">
+                  {service.benefits.map((benefit, idx) => (
+                    <li key={idx} className="flex items-center space-x-3">
+                      <CheckCircle size={16} className="text-teal flex-shrink-0" />
+                      <span className="text-dark-grey">{benefit}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -232,126 +244,150 @@ const AI = () => {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial="initial"
-            whileInView="animate"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={staggerChildren}
             className="text-center mb-16"
           >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
-              Our 90-Day AI Implementation Process
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl text-medium-grey max-w-3xl mx-auto">
-              A proven methodology that delivers results quickly without disrupting your operations.
-            </motion.p>
+            <h2 className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
+              Our Proven Implementation Process
+            </h2>
+            <p className="text-xl text-medium-grey max-w-3xl mx-auto">
+              A systematic approach that ensures successful AI adoption with minimal disruption to your operations.
+            </p>
           </motion.div>
 
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerChildren}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
-          >
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-teal">1</span>
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Assessment</h3>
-              <p className="text-medium-grey">
-                Analyze your business processes and identify the highest-impact AI opportunities.
-              </p>
-              <div className="text-sm text-teal font-semibold mt-2">Week 1-2</div>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-dark-blue/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-dark-blue">2</span>
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Strategy</h3>
-              <p className="text-medium-grey">
-                Develop a customized AI implementation roadmap tailored to your business goals.
-              </p>
-              <div className="text-sm text-teal font-semibold mt-2">Week 3-4</div>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-teal">3</span>
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Implementation</h3>
-              <p className="text-medium-grey">
-                Deploy AI solutions with minimal disruption to your existing operations.
-              </p>
-              <div className="text-sm text-teal font-semibold mt-2">Week 5-10</div>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="text-center">
-              <div className="w-16 h-16 bg-dark-blue/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-dark-blue">4</span>
-              </div>
-              <h3 className="text-xl font-bold text-dark-blue mb-4">Optimization</h3>
-              <p className="text-medium-grey">
-                Monitor performance and continuously optimize for maximum ROI and efficiency.
-              </p>
-              <div className="text-sm text-teal font-semibold mt-2">Week 11-12</div>
-            </motion.div>
-          </motion.div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {implementationSteps.map((step, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="w-16 h-16 bg-teal text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
+                  {step.step}
+                </div>
+                
+                <h3 className="text-xl font-bold text-dark-blue mb-4">
+                  {step.title}
+                </h3>
+                
+                <p className="text-medium-grey leading-relaxed">
+                  {step.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* AI Benefits Component */}
-      <AIBenefits />
+      {/* Case Studies */}
+      <section id="case-studies" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-dark-blue mb-6">
+              Real Results from Real Businesses
+            </h2>
+            <p className="text-xl text-medium-grey max-w-3xl mx-auto">
+              See how we've helped businesses like yours achieve remarkable results through strategic AI implementation.
+            </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-3 gap-8">
+            {caseStudies.map((study, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-gray-50 rounded-2xl p-8"
+              >
+                <div className="text-sm font-semibold text-teal mb-2">
+                  {study.industry}
+                </div>
+                
+                <h3 className="text-xl font-bold text-dark-blue mb-4">
+                  Challenge
+                </h3>
+                <p className="text-medium-grey mb-6">
+                  {study.challenge}
+                </p>
+
+                <h4 className="text-lg font-semibold text-dark-blue mb-3">
+                  Our Solution
+                </h4>
+                <p className="text-medium-grey mb-6">
+                  {study.solution}
+                </p>
+
+                <h4 className="text-lg font-semibold text-dark-blue mb-3">
+                  Results
+                </h4>
+                <ul className="space-y-2">
+                  {study.results.map((result, idx) => (
+                    <li key={idx} className="flex items-center space-x-3">
+                      <CheckCircle size={16} className="text-teal flex-shrink-0" />
+                      <span className="text-dark-grey font-medium">{result}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-dark-blue text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="py-20 gradient-bg text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial="initial"
-            whileInView="animate"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={staggerChildren}
           >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold mb-6">
-              Ready to Transform Your Business with AI?
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
-              Join hundreds of businesses already benefiting from AI automation. 
-              Get your free AI readiness assessment and implementation roadmap.
-            </motion.p>
-            
-            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Ready to Supercharge Your Business with AI?
+            </h2>
+            <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-200">
+              Don't let your competitors get ahead. Start your AI transformation today 
+              with a free assessment or custom strategy session.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <button
                 onClick={() => setShowBookingModal(true)}
-                className="group bg-teal hover:bg-teal/90 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 flex items-center space-x-2 shadow-xl hover:shadow-2xl transform hover:scale-105"
+                className="bg-white text-dark-blue px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors duration-200 flex items-center space-x-2"
               >
-                <Zap size={20} />
-                <span>Get Your Free AI Assessment</span>
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-200" />
+                <span>Book Free AI Assessment</span>
+                <ArrowRight size={20} />
               </button>
               
-              <div className="text-gray-300 text-sm">
-                <div className="flex items-center space-x-2 mb-1">
-                  <CheckCircle size={16} className="text-teal" />
-                  <span>Free 30-minute consultation</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle size={16} className="text-teal" />
-                  <span>Custom implementation roadmap</span>
-                </div>
-              </div>
-            </motion.div>
+              <a
+                href="tel:+44-123-456-7890"
+                className="text-white hover:text-teal border-b-2 border-transparent hover:border-teal font-semibold text-lg transition-all duration-300"
+              >
+                Or call us directly
+              </a>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <FAQSection faqs={aiFAQs} />
-
       {/* Booking Modal */}
-      {showBookingModal && (
-        <BookingModal onClose={() => setShowBookingModal(false)} />
-      )}
+      <BookingModal 
+        isOpen={showBookingModal} 
+        onClose={() => setShowBookingModal(false)}
+        consultationType="AI Implementation Assessment"
+      />
     </div>
   )
 }

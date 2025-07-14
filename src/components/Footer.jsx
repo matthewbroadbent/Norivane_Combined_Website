@@ -1,204 +1,69 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Mail, Phone, MapPin, Linkedin, Twitter } from 'lucide-react'
+import Logo from './Logo'
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear()
-
   return (
-    <footer style={{
-      backgroundColor: '#0A2342',
-      color: 'white',
-      padding: '4rem 0 2rem'
-    }}>
-      <div className="container">
-        <div className="grid grid-cols-4" style={{ marginBottom: '3rem' }}>
+    <footer className="bg-dark-blue text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
-          <div style={{ gridColumn: 'span 2' }}>
-            <Link to="/" style={{
-              fontSize: '2rem',
-              fontWeight: 600,
-              color: 'white',
-              textDecoration: 'none',
-              display: 'inline-block',
-              marginBottom: '1.5rem'
-            }}>
-              <span>nor</span>
-              <span style={{ 
-                fontStyle: 'italic', 
-                fontWeight: 400, 
-                color: '#00B2A9' 
-              }}>i</span>
-              <span>vane</span>
-            </Link>
-            <p style={{ 
-              color: 'rgba(255, 255, 255, 0.8)', 
-              marginBottom: '1.5rem',
-              maxWidth: '400px'
-            }}>
-              Transforming businesses through AI implementation and strategic exit planning. 
-              Delivering measurable results for ambitious business owners.
+          <div className="col-span-1 md:col-span-2">
+            <div className="mb-4">
+              <Logo variant="white" />
+            </div>
+            <p className="text-gray-300 mb-6 max-w-md">
+              The strategic partner for ambitious business owners. Whether you're scaling with AI or planning your exit, we unlock hidden value and make your business unstoppable.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <Mail size={16} style={{ color: '#00B2A9' }} />
-                <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>us@norivane.com</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <Phone size={16} style={{ color: '#00B2A9' }} />
-                <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>+44 7456 224125</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <MapPin size={16} style={{ color: '#00B2A9' }} />
-                <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>Swansea, UK</span>
-              </div>
+            <div className="flex space-x-4">
+              <a href="#" className="text-gray-300 hover:text-teal transition-colors duration-200">
+                <Linkedin size={20} />
+              </a>
+              <a href="#" className="text-gray-300 hover:text-teal transition-colors duration-200">
+                <Twitter size={20} />
+              </a>
             </div>
           </div>
 
-          {/* Services */}
+          {/* Quick Links */}
           <div>
-            <h3 style={{ 
-              fontSize: '1.125rem', 
-              fontWeight: 600, 
-              color: 'white',
-              marginBottom: '1.5rem'
-            }}>
-              Services
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <Link 
-                to="/ai" 
-                style={{ 
-                  color: 'rgba(255, 255, 255, 0.8)', 
-                  textDecoration: 'none',
-                  transition: 'color 0.3s ease'
-                }}
-                onMouseEnter={(e) => e.target.style.color = '#00B2A9'}
-                onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}
-              >
-                AI Implementation
-              </Link>
-              <Link 
-                to="/exit-planning" 
-                style={{ 
-                  color: 'rgba(255, 255, 255, 0.8)', 
-                  textDecoration: 'none',
-                  transition: 'color 0.3s ease'
-                }}
-                onMouseEnter={(e) => e.target.style.color = '#00B2A9'}
-                onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}
-              >
-                Exit Planning
-              </Link>
-              <Link 
-                to="/contact" 
-                style={{ 
-                  color: 'rgba(255, 255, 255, 0.8)', 
-                  textDecoration: 'none',
-                  transition: 'color 0.3s ease'
-                }}
-                onMouseEnter={(e) => e.target.style.color = '#00B2A9'}
-                onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}
-              >
-                Consultation
-              </Link>
-            </div>
+            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li><Link to="/" className="text-gray-300 hover:text-teal transition-colors duration-200">Home</Link></li>
+              <li><Link to="/exit" className="text-gray-300 hover:text-teal transition-colors duration-200">Exit Planning</Link></li>
+              <li><Link to="/ai" className="text-gray-300 hover:text-teal transition-colors duration-200">AI Solutions</Link></li>
+              <li><Link to="/blog" className="text-gray-300 hover:text-teal transition-colors duration-200">Blog</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-teal transition-colors duration-200">Contact</Link></li>
+            </ul>
           </div>
 
-          {/* Resources */}
+          {/* Contact Info */}
           <div>
-            <h3 style={{ 
-              fontSize: '1.125rem', 
-              fontWeight: 600, 
-              color: 'white',
-              marginBottom: '1.5rem'
-            }}>
-              Resources
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <Link 
-                to="/blog" 
-                style={{ 
-                  color: 'rgba(255, 255, 255, 0.8)', 
-                  textDecoration: 'none',
-                  transition: 'color 0.3s ease'
-                }}
-                onMouseEnter={(e) => e.target.style.color = '#00B2A9'}
-                onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}
-              >
-                Blog
-              </Link>
-              <Link 
-                to="/about" 
-                style={{ 
-                  color: 'rgba(255, 255, 255, 0.8)', 
-                  textDecoration: 'none',
-                  transition: 'color 0.3s ease'
-                }}
-                onMouseEnter={(e) => e.target.style.color = '#00B2A9'}
-                onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}
-              >
-                About
-              </Link>
-              <Link 
-                to="/contact" 
-                style={{ 
-                  color: 'rgba(255, 255, 255, 0.8)', 
-                  textDecoration: 'none',
-                  transition: 'color 0.3s ease'
-                }}
-                onMouseEnter={(e) => e.target.style.color = '#00B2A9'}
-                onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}
-              >
-                Contact
-              </Link>
+            <h3 className="text-lg font-semibold mb-4">Get in Touch</h3>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <Mail size={16} className="text-teal" />
+                <span className="text-gray-300">us@norivane.co.uk</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Phone size={16} className="text-teal" />
+                <span className="text-gray-300">+44 (0) 7356 224125</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <MapPin size={16} className="text-teal" />
+                <span className="text-gray-300">Swansea, Wales, UK</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div style={{
-          borderTop: '1px solid rgba(255, 255, 255, 0.2)',
-          paddingTop: '2rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1rem'
-        }}>
-          <div style={{ 
-            color: 'rgba(255, 255, 255, 0.6)', 
-            fontSize: '0.875rem' 
-          }}>
-            © {currentYear} Norivane. All rights reserved.
-          </div>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <a
-              href="#"
-              style={{ 
-                color: 'rgba(255, 255, 255, 0.6)', 
-                transition: 'color 0.3s ease'
-              }}
-              onMouseEnter={(e) => e.target.style.color = '#00B2A9'}
-              onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}
-              aria-label="LinkedIn"
-            >
-              <Linkedin size={20} />
-            </a>
-            <a
-              href="#"
-              style={{ 
-                color: 'rgba(255, 255, 255, 0.6)', 
-                transition: 'color 0.3s ease'
-              }}
-              onMouseEnter={(e) => e.target.style.color = '#00B2A9'}
-              onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}
-              aria-label="Twitter"
-            >
-              <Twitter size={20} />
-            </a>
-          </div>
+        <div className="border-t border-gray-700 mt-8 pt-8 text-center">
+          <p className="text-gray-300">
+            © 2025 Norivane. All rights reserved. | 
+            <Link to="/privacy" className="text-teal hover:underline ml-1">Privacy Policy</Link> | 
+            <Link to="/terms" className="text-teal hover:underline ml-1">Terms of Service</Link>
+          </p>
         </div>
       </div>
     </footer>

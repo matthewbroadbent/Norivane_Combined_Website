@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext()
 
@@ -11,49 +11,41 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const login = (credentials) => {
-    // Demo login - in production, this would validate against a real backend
-    if (credentials.email === 'admin@norivane.com' && credentials.password === 'admin123') {
-      const userData = {
-        id: 1,
-        email: 'admin@norivane.com',
-        name: 'Admin User',
-        role: 'admin'
-      }
-      setUser(userData)
+  // Admin credentials (in production, this should be handled securely)
+  const ADMIN_CREDENTIALS = {
+    username: 'admin',
+    password: 'norivane2024!'
+  }
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const token = localStorage.getItem('admin_token')
+    if (token === 'authenticated') {
       setIsAuthenticated(true)
-      localStorage.setItem('auth_token', 'demo_token')
+    }
+    setIsLoading(false)
+  }, [])
+
+  const login = (username, password) => {
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+      setIsAuthenticated(true)
+      localStorage.setItem('admin_token', 'authenticated')
       return true
     }
     return false
   }
 
   const logout = () => {
-    setUser(null)
     setIsAuthenticated(false)
-    localStorage.removeItem('auth_token')
+    localStorage.removeItem('admin_token')
   }
 
-  // Check for existing session on mount
-  React.useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    if (token === 'demo_token') {
-      setUser({
-        id: 1,
-        email: 'admin@norivane.com',
-        name: 'Admin User',
-        role: 'admin'
-      })
-      setIsAuthenticated(true)
-    }
-  }, [])
-
   const value = {
-    user,
     isAuthenticated,
+    isLoading,
     login,
     logout
   }

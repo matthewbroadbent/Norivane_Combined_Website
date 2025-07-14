@@ -6,32 +6,30 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        'teal': '#00B2A9',
-        'dark-blue': '#0A2342',
-        'medium-grey': '#6B7280',
-        'dark-grey': '#374151',
-        'light-grey': '#F8F9FA'
-      },
       fontFamily: {
-        'sans': ['Montserrat', 'system-ui', 'sans-serif']
+        'montserrat': ['Montserrat', 'sans-serif'],
+      },
+      colors: {
+        'dark-blue': '#0A2342',
+        'medium-blue': '#1E3A8A',
+        'light-blue': '#3B82F6',
+        'teal': '#00B2A9',
+        'dark-grey': '#374151',
+        'medium-grey': '#6B7280',
+        'light-grey': '#9CA3AF',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
-        'fadeInUp': 'fadeInUp 0.6s ease-out'
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-20px)' }
-        },
-        fadeInUp: {
-          '0%': { opacity: '0', transform: 'translateY(30px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' }
+          '50%': { transform: 'translateY(-20px)' },
         }
       },
       backgroundImage: {
-        'gradient-bg': 'linear-gradient(135deg, #0A2342 0%, #00B2A9 100%)'
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       }
     },
   },

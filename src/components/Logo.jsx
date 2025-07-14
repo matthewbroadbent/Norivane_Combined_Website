@@ -12,7 +12,6 @@ const Logo = ({ currentPath = '/', variant = 'default' }) => {
   const getColors = () => {
     if (variant === 'white') {
       return {
-        dot: 'text-white',
         nor: 'text-white',
         i: 'text-teal',
         vane: 'text-white',
@@ -23,7 +22,6 @@ const Logo = ({ currentPath = '/', variant = 'default' }) => {
     }
     
     return {
-      dot: 'text-teal',
       nor: 'text-dark-blue',
       i: 'text-teal',
       vane: 'text-dark-blue',
@@ -36,10 +34,9 @@ const Logo = ({ currentPath = '/', variant = 'default' }) => {
   const colors = getColors()
 
   return (
-    <div className="flex items-center text-xl font-semibold">
-      <span className={`${colors.dot} font-semibold mr-1`}>•</span>
+    <div className="flex items-center text-xl font-montserrat tracking-tight">
       <span className={`${colors.nor} font-semibold`}>nor</span>
-      <span className={`${colors.i} font-semibold italic mx-1`}>i</span>
+      <span className={`${colors.i} font-medium italic`}>i</span>
       <span className={`${colors.vane} font-semibold`}>vane</span>
       {suffix && (
         <span className="text-sm ml-1">
