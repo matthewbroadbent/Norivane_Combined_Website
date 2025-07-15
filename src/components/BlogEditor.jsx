@@ -256,7 +256,7 @@ const BlogEditor = ({ post, onClose, onSave }) => {
                     />
                     <div className="text-sm text-medium-grey mt-2 space-y-1">
                       <p><strong>Markdown formatting supported:</strong></p>
-                      <p># ## ### for headings, **bold**, *italic*, * - for lists, > for quotes</p>
+                      <p># ## ### for headings, **bold**, *italic*, * - for lists, &gt; for quotes</p>
                     </div>
                   </div>
                 </div>
