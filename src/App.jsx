@@ -1,20 +1,20 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { AuthProvider } from './contexts/AuthContext'
-import { BlogProvider } from './contexts/BlogContext'
-import Navbar from './components/Navbar'
-import Home from './pages/Home'
-import Exit from './pages/Exit'
-import AI from './pages/AI'
-import Blog from './pages/Blog'
-import BlogPost from './pages/BlogPost'
-import Contact from './pages/Contact'
-import AdminLogin from './pages/AdminLogin'
-import AdminDashboard from './pages/AdminDashboard'
-import Sitemap from './pages/Sitemap'
-import ProtectedRoute from './components/ProtectedRoute'
-import Footer from './components/Footer'
-import SitemapGenerator from './components/SitemapGenerator'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { BlogProvider } from './contexts/BlogContext';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Exit from './pages/Exit';
+import AI from './pages/AI';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
+import Contact from './pages/Contact';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
+import Sitemap from './pages/Sitemap';
+import ProtectedRoute from './components/ProtectedRoute';
+import Footer from './components/Footer';
+import SitemapGenerator from './components/SitemapGenerator';
 
 function App() {
   return (
@@ -47,7 +47,8 @@ function App() {
                     <Route path="/exit" element={<Exit />} />
                     <Route path="/ai" element={<AI />} />
                     <Route path="/blog" element={<Blog />} />
-                    <Route path="/blog/:id" element={<BlogPost />} />
+                    {/* THIS IS THE CRUCIAL CHANGE: :id is now :slug */}
+                    <Route path="/blog/:slug" element={<BlogPost />} />
                     <Route path="/contact" element={<Contact />} />
                   </Routes>
                   <Footer />
@@ -58,7 +59,7 @@ function App() {
         </Router>
       </BlogProvider>
     </AuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;
