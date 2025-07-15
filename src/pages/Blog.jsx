@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Search, Calendar, User, ArrowRight, Tag } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useBlog } from '../contexts/BlogContext'
+import { useBlog } from '../contexts/BlogContext' // Ensure this is the ONLY useBlog import
 import SEOHelmet from '../components/SEOHelmet'
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation'
 
@@ -164,7 +164,6 @@ const Blog = () => {
                         alt={featuredPost.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          // console.log('Featured image failed to load:', e.target.src) // Commented out
                           e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
                         }}
                       />
@@ -199,9 +198,9 @@ const Blog = () => {
                           </div>
                           <span className="font-semibold text-dark-blue">{featuredPost.author}</span>
                         </div>
-                        {/* === FEATURED POST LINK FIX === */}
+                        {/* FEATURED POST LINK: Changed from ID to SLUG */}
                         <Link 
-                          to={`/blog/${featuredPost.slug}`} // Changed from ID to SLUG!
+                          to={`/blog/${featuredPost.slug}`} 
                           className="flex items-center space-x-2 text-teal font-semibold hover:text-teal/80 transition-colors duration-200"
                         >
                           <span>Read More</span>
@@ -233,15 +232,14 @@ const Blog = () => {
                       variants={fadeInUp}
                       className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group"
                     >
-                      {/* === REGULAR POST LINK FIX === */}
-                      <Link to={`/blog/${post.slug}`} className="block"> {/* Changed from ID to SLUG! */}
+                      {/* REGULAR POST LINK: Changed from ID to SLUG */}
+                      <Link to={`/blog/${post.slug}`} className="block">
                         <div className="relative h-48 overflow-hidden">
                           <img
                             src={getImageWithFallback(post.image)}
                             alt={post.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             onError={(e) => {
-                              // console.log('Post image failed to load:', e.target.src) // Commented out
                               e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
                             }}
                           />
