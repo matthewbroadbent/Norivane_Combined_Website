@@ -15,13 +15,14 @@ import Sitemap from './pages/Sitemap';
 import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer';
 import SitemapGenerator from './components/SitemapGenerator';
-import AuthCallback from './pages/AuthCallback'; // 1. IMPORT ADDED
+import AuthCallback from './pages/AuthCallback';
 
 function App() {
   return (
-    <AuthProvider>
-      <BlogProvider>
-        <Router>
+    // Router should be the outermost component
+    <Router>
+      <AuthProvider>
+        <BlogProvider>
           <div className="min-h-screen bg-white">
             <SitemapGenerator />
             <Routes>
@@ -29,7 +30,7 @@ function App() {
               <Route path="/sitemap.xml" element={<Sitemap />} />
               
               {/* --- Admin & Auth Routes --- */}
-              <Route path="/auth/callback" element={<AuthCallback />} /> {/* 2. ROUTE ADDED */}
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route 
                 path="/admin/dashboard" 
@@ -49,7 +50,6 @@ function App() {
                     <Route path="/exit" element={<Exit />} />
                     <Route path="/ai" element={<AI />} />
                     <Route path="/blog" element={<Blog />} />
-                    {/* THIS IS THE CRUCIAL CHANGE: :id is now :slug */}
                     <Route path="/blog/:slug" element={<BlogPost />} />
                     <Route path="/contact" element={<Contact />} />
                   </Routes>
@@ -58,9 +58,9 @@ function App() {
               } />
             </Routes>
           </div>
-        </Router>
-      </BlogProvider>
-    </AuthProvider>
+        </BlogProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 
