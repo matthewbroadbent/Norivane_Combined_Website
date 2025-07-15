@@ -1,6 +1,6 @@
 import React from 'react'
-import { useState, useEffect } from 'react'; // Add useState and useEffect imports at the top if not there
-import { useParams, Navigate, Link } from 'react-router-dom' // <--- Add Link here!
+import { useState, useEffect } from 'react';
+import { useParams, Navigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Calendar, User, ArrowLeft, Tag, Clock } from 'lucide-react'
 import { useBlog } from '../contexts/BlogContext'
@@ -14,69 +14,63 @@ const BlogPost = () => {
   const [allPublishedPosts, setAllPublishedPosts] = useState([]);
 
   useEffect(() => {
-  const fetchAllPosts = async () => {
-  try {
-    const posts = await getPublishedPosts(); // Use the tool to get all posts
-    setAllPublishedPosts(posts); // Put them in our new 'allPublishedPosts' box
-  } catch (err) {
-    // console.error("Failed to load all published posts:", err);
-    // This just tells us if something went wrong in the console
-  }
-};
-
-
+    const fetchAllPosts = async () => {
+      try {
+        const posts = await getPublishedPosts();
+        setAllPublishedPosts(posts);
+      } catch (err) {
+        // console.error("Failed to load all published posts:", err);
+      }
+    };
 
     const fetchSinglePost = async () => {
-    if (!slug) { // Don't fetch if slug is not available
-      setLoading(false);
-      setError("No slug provided for blog post.");
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      const fetchedPost = await getBlogPostBySlug(slug); // Use the new function!
-      if (fetchedPost) {
-        setPost(fetchedPost);
-      } else {
-        // If post not found or API returned null (e.g., 404 handled by context)
-        setError("Blog post not found.");
-        setPost(null); // Ensure post is null
+      if (!slug) {
+        setLoading(false);
+        setError("No slug provided for blog post.");
+        return;
       }
-    } catch (err) {
-      setError("Failed to load blog post.");
-      setPost(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+      setLoading(true);
+      setError(null);
+      try {
+        const fetchedPost = await getBlogPostBySlug(slug);
+        if (fetchedPost) {
+          setPost(fetchedPost);
+        } else {
+          setError("Blog post not found.");
+          setPost(null);
+        }
+      } catch (err) {
+        setError("Failed to load blog post.");
+        setPost(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchSinglePost();
-  fetchAllPosts(); // <--- Add this line!
-}, [slug, getBlogPostBySlug, getPublishedPosts]);
+    fetchSinglePost();
+    fetchAllPosts();
+  }, [slug, getBlogPostBySlug, getPublishedPosts]);
 
- // Dependencies: re-run if slug or the fetch function changes
-
- if (loading) {
-  return (
-    <div className="min-h-screen flex items-center justify-center pt-16">
-      <p className="text-xl text-gray-700">Loading blog post, please wait...</p>
-    </div>
-  );
-}
-if (error) {
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center pt-16">
-      <p className="text-xl text-red-500 mb-4">{error}</p>
-      <button
-        onClick={() => window.history.back()}
-        className="px-6 py-3 bg-teal text-white rounded-full font-semibold hover:bg-darker-teal transition-colors"
-      >
-        Go Back
-      </button>
-    </div>
-  );
-}
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pt-16">
+        <p className="text-xl text-gray-700">Loading blog post, please wait...</p>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center pt-16">
+        <p className="text-xl text-red-500 mb-4">{error}</p>
+        <button
+          onClick={() => window.history.back()}
+          className="px-6 py-3 bg-teal text-white rounded-full font-semibold hover:bg-darker-teal transition-colors"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
 
   if (!post) {
     return <Navigate to="/blog" replace />
@@ -88,40 +82,24 @@ if (error) {
     transition: { duration: 0.6 }
   }
 
-  // Enhanced markdown formatting function
   const formatContent = (content) => {
     if (!content) return generateSampleContent(post)
     
     let formattedContent = content
-      // Headers - must be processed first
       .replace(/^### (.*$)/gm, '<h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">$1</h3>')
       .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">$1</h2>')
       .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold text-dark-blue mb-6 mt-8">$1</h1>')
-      
-      // Bold and italic - process before paragraphs
       .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-dark-blue">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-      
-      // Lists - process before paragraphs
       .replace(/^\* (.*$)/gm, '<li class="mb-2 ml-4 relative before:content-[\'•\'] before:absolute before:-left-4 before:text-teal before:font-bold">$1</li>')
       .replace(/^- (.*$)/gm, '<li class="mb-2 ml-4 relative before:content-[\'•\'] before:absolute before:-left-4 before:text-teal before:font-bold">$1</li>')
       .replace(/^\d+\. (.*$)/gm, '<li class="mb-2 ml-4 list-decimal">$1</li>')
-      
-      // Blockquotes
       .replace(/^> (.*$)/gm, '<blockquote class="border-l-4 border-teal bg-gray-50 p-6 my-8 italic text-gray-600"><p class="mb-0">$1</p></blockquote>')
-      
-      // Paragraphs - process last, skip lines that are already formatted
       .replace(/^(?!<[h|l|b])(.*\S.*$)/gm, '<p class="mb-4 leading-relaxed text-gray-700">$1</p>')
-      
-      // Clean up empty paragraphs
       .replace(/<p class="mb-4 leading-relaxed text-gray-700"><\/p>/g, '')
-      
-      // Wrap consecutive list items in ul tags
       .replace(/(<li class="mb-2 ml-4[^>]*>.*?<\/li>\s*)+/g, (match) => {
         return `<ul class="mb-6 space-y-2">${match}</ul>`
       })
-      
-      // Wrap consecutive numbered list items in ol tags
       .replace(/(<li class="mb-2 ml-4 list-decimal">.*?<\/li>\s*)+/g, (match) => {
         return `<ol class="mb-6 space-y-2 list-decimal list-inside">${match}</ol>`
       })
@@ -129,12 +107,10 @@ if (error) {
     return formattedContent
   }
 
-  // Get featured image with fallback
   const getFeaturedImage = () => {
     if (post.image && post.image.trim()) {
       return post.image
     }
-    // Default fallback image
     return 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop'
   }
 
@@ -206,7 +182,6 @@ if (error) {
               alt={post.title}
               className="w-full h-96 object-cover rounded-2xl shadow-2xl"
               onError={(e) => {
-              //  console.log('Image failed to load:', e.target.src)
                 e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop'
               }}
             />
@@ -231,13 +206,14 @@ if (error) {
         </div>
       </section>
 
-{/* Related Posts */}
+      {/* Related Posts */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-dark-blue mb-8">Related Articles</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {allPublishedPosts // Using the allPublishedPosts you successfully set up!
-              .filter(p => p.id !== post.id && p.category === post.category)
+            {allPublishedPosts
+              // FIX 1: Ensure category exists on both posts before comparing
+              .filter(p => p.id !== post.id && p.category && p.category === post.category)
               .slice(0, 3)
               .map((relatedPost) => (
                 <Link to={`/blog/${relatedPost.slug}`} className="block" key={relatedPost.id}>
@@ -463,7 +439,8 @@ const generateSampleContent = (post) => {
     <p class="mb-4 leading-relaxed text-gray-700">This is a sample article demonstrating the blog post functionality. In a real implementation, this content would be stored in your content management system and could include rich text, images, videos, and other media.</p>
     <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">Key Takeaways</h3>
     <ul class="mb-6 space-y-2">
-      <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Understanding the importance of ${post.category.toLowerCase()}</li>
+      {/* FIX 2: Safely access category to prevent crash */}
+      <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Understanding the importance of ${post.category?.toLowerCase() || 'this topic'}</li>
       <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Implementing best practices in your business</li>
       <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Measuring success and continuous improvement</li>
     </ul>
