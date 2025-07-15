@@ -3,20 +3,33 @@ import { motion } from 'framer-motion';
 import { Save, X, Eye } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext'; // We need this for authentication
 
+// Helper function to create URL-friendly slugs
+const slugify = (text) => {
+  if (!text) return '';
+  return text
+    .toString()
+    .normalize('NFD') // Normalize diacritics (e.g., é -> e)
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .toLowerCase() // Convert to lowercase
+    .trim() // Trim leading/trailing whitespace
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/[^\w-]+/g, '') // Remove all non-word chars except hyphens
+    .replace(/--+/g, '-'); // Replace multiple hyphens with single
+};
+
 const BlogEditor = ({ post, onClose, onSave }) => {
-  // Get the user's session from the AuthContext to authorize API calls
-  const { session } = useAuth(); 
+  const { session } = useAuth();
 
   const [formData, setFormData] = useState({
     title: '',
-    slug: '', // Added slug field
+    slug: '',
     excerpt: '',
     content: '',
     category: 'Exit Planning',
     author: 'Admin User',
-    image: '',
+    featured_image: '', // Changed from 'image' to 'featured_image'
     featured: false,
-    status: 'draft', // Using 'status' instead of 'published'
+    status: 'draft',
     readTime: '5 min read',
   });
   const [isPreview, setIsPreview] = useState(false);
@@ -28,26 +41,35 @@ const BlogEditor = ({ post, onClose, onSave }) => {
     if (post) {
       setFormData({
         ...post,
-        status: post.published ? 'published' : 'draft' // Adapt to new status field
+        // Ensure slug is properly set from existing post if available
+        slug: post.slug || slugify(post.title || ''),
+        status: post.published ? 'published' : 'draft', // Adapt to new status field
+        featured_image: post.featured_image || '', // Ensure featured_image is set
       });
     } else {
-      // Set a default author when creating a new post
       setFormData(prev => ({ ...prev, author: session?.user?.email || 'Admin User' }));
     }
   }, [post, session]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    setFormData(prev => {
+      const newState = {
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      };
+
+      // Automatically generate slug if title changes and slug hasn't been manually set
+      if (name === 'title' && !post) { // Only auto-generate for new posts or if not explicitly set
+        newState.slug = slugify(value);
+      }
+      return newState;
+    });
   };
 
-  // This is the new, working save function
   const handleSave = async (newStatus) => {
     setIsSaving(true);
-    
+
     const token = session?.access_token;
     if (!token) {
       alert('Authentication error. Please log in again.');
@@ -55,15 +77,23 @@ const BlogEditor = ({ post, onClose, onSave }) => {
       return;
     }
 
-    const postData = { ...formData, status: newStatus };
+    // Ensure slug is generated/cleaned before saving if it's empty or needs updating
+    const finalSlug = formData.slug || slugify(formData.title); // Fallback to title slugify
+    const postData = {
+        ...formData,
+        slug: finalSlug, // Use the generated/manual slug
+        status: newStatus,
+        published: newStatus === 'published' // Ensure 'published' boolean is also set for backend
+    };
 
     try {
       let response;
       const apiUrl = 'https://blog-norivane.vercel.app/api/blog';
 
       if (post) {
-        // Update an existing post (using slug)
-        response = await fetch(`${apiUrl}/${post.slug}`, {
+        // Update an existing post (using original post's slug for the URL)
+        // Ensure you use the original slug from 'post' prop, not the 'formData.slug' which might have changed
+        response = await fetch(`${apiUrl}/posts/${post.slug}`, { // Corrected URL to include /posts/
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -89,7 +119,7 @@ const BlogEditor = ({ post, onClose, onSave }) => {
       }
 
       alert(`Post saved successfully as ${newStatus}!`);
-      onSave(); // This calls the function from the parent to refresh/close
+      onSave();
     } catch (error) {
       console.error('Error saving post:', error);
       alert(`Error: ${error.message}`);
@@ -98,7 +128,6 @@ const BlogEditor = ({ post, onClose, onSave }) => {
     }
   };
 
-  // All your great preview functions are kept exactly as they were
   const formatContentForPreview = (content) => {
     if (!content) return '';
     let formattedContent = content
@@ -117,12 +146,18 @@ const BlogEditor = ({ post, onClose, onSave }) => {
       .replace(/(<li class="mb-2 ml-4 list-decimal">.*?<\/li>\s*)+/g, (match) => `<ol class="mb-6 space-y-2 list-decimal list-inside">${match}</ol>`);
     return formattedContent;
   };
-  const getImageWithFallback = () => formData.image?.trim() || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop';
+
+  // Use featured_image from formData
+  const getImageWithFallback = () => formData.featured_image?.trim() || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop';
+
   const renderPreview = () => (
     <div className="prose prose-lg max-w-none">
       <img src={getImageWithFallback()} alt={formData.title} className="w-full h-64 object-cover rounded-lg mb-6" onError={(e) => { e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'; }} />
       <div className="flex items-center space-x-4 text-sm text-medium-grey mb-4">
-        <span>{formData.category}</span><span>{new Date().toLocaleDateString()}</span><span>{formData.readTime}</span>
+        <span>{formData.category}</span>
+        {/* Use a placeholder date for new posts, or actual date for existing */}
+        <span>{post?.created_at ? new Date(post.created_at).toLocaleDateString() : new Date().toLocaleDateString()}</span>
+        <span>{formData.readTime}</span>
       </div>
       <h1 className="text-4xl font-bold text-dark-blue mb-4">{formData.title}</h1>
       <p className="text-xl text-medium-grey mb-6">{formData.excerpt}</p>
@@ -132,7 +167,6 @@ const BlogEditor = ({ post, onClose, onSave }) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header and all JSX remains the same */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -167,9 +201,8 @@ const BlogEditor = ({ post, onClose, onSave }) => {
                   <div><label className="block text-sm font-medium text-dark-blue mb-2">Category</label><select name="category" value={formData.category} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent">{categories.map(category => (<option key={category} value={category}>{category}</option>))}</select></div>
                   <div><label className="block text-sm font-medium text-dark-blue mb-2">Author</label><input type="text" name="author" value={formData.author} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent" /></div>
                   <div><label className="block text-sm font-medium text-dark-blue mb-2">Read Time</label><input type="text" name="readTime" value={formData.readTime} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent" placeholder="e.g., 5 min read" /></div>
-                  <div><label className="block text-sm font-medium text-dark-blue mb-2">Featured Image URL</label><input type="url" name="image" value={formData.image} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent" placeholder="https://images.pexels.com/..." /><p className="text-xs text-medium-grey mt-1">Use high-quality images from Pexels or similar sources</p></div>
+                  <div><label className="block text-sm font-medium text-dark-blue mb-2">Featured Image URL</label><input type="url" name="featured_image" value={formData.featured_image} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent" placeholder="https://images.pexels.com/..." /><p className="text-xs text-medium-grey mt-1">Use high-quality images from Pexels or similar sources</p></div>
                   <div className="flex items-center space-x-3"><input type="checkbox" name="featured" checked={formData.featured} onChange={handleChange} className="w-4 h-4 text-teal border-gray-300 rounded focus:ring-teal" /><label className="text-sm font-medium text-dark-blue">Featured Post</label></div>
-                  {/* This checkbox is now controlled by the Save/Publish buttons */}
                 </div>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white rounded-lg shadow-sm p-6">
