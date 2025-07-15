@@ -1,58 +1,67 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext()
+const AuthContext = createContext();
 
 export const useAuth = () => {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context
-}
+  return context;
+};
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-
-  // Admin credentials (in production, this should be handled securely)
-  const ADMIN_CREDENTIALS = {
-    username: 'admin',
-    password: 'norivane2024!'
-  }
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in
-    const token = localStorage.getItem('admin_token')
-    if (token === 'authenticated') {
-      setIsAuthenticated(true)
+    // Check if the user's auth token exists in local storage
+    const token = localStorage.getItem('supabase_token');
+    if (token) {
+      setIsAuthenticated(true);
     }
-    setIsLoading(false)
-  }, [])
+    setIsLoading(false);
+  }, []);
 
-  const login = (username, password) => {
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-      setIsAuthenticated(true)
-      localStorage.setItem('admin_token', 'authenticated')
-      return true
+  const login = async (credentials) => {
+    try {
+      // This is the API call to your backend
+      const response = await fetch('https://blog-norivane.vercel.app/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Store the actual token from Supabase for security
+        localStorage.setItem('supabase_token', data.session.access_token);
+        setIsAuthenticated(true);
+        return true; // Indicate success
+      } else {
+        // Login failed on the server
+        return false; // Indicate failure
+      }
+    } catch (error) {
+      console.error('Login request failed:', error);
+      return false; // Indicate failure
     }
-    return false
-  }
+  };
 
   const logout = () => {
-    setIsAuthenticated(false)
-    localStorage.removeItem('admin_token')
-  }
+    // Remove the specific token on logout
+    localStorage.removeItem('supabase_token');
+    setIsAuthenticated(false);
+  };
 
   const value = {
     isAuthenticated,
     isLoading,
     login,
-    logout
-  }
+    logout,
+  };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  )
-}
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
