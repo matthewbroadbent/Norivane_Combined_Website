@@ -16,6 +16,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer';
 import SitemapGenerator from './components/SitemapGenerator';
 import AuthCallback from './pages/AuthCallback';
+import UpdatePassword from './pages/UpdatePassword';
 
 function App() {
   return (
@@ -52,6 +53,9 @@ function App() {
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/blog/:slug" element={<BlogPost />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/update-password" element={<UpdatePassword />} />
+                    <Route path="/auth/callback" element={<AuthCallback />} />
+                    <Route path="/admin/login" element={<AdminLogin />} />
                   </Routes>
                   <Footer />
                 </>

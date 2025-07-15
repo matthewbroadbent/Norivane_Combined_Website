@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for an existing session when the app loads
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
@@ -26,53 +25,50 @@ export const AuthProvider = ({ children }) => {
     };
     getSession();
 
-    // Listen for authentication state changes (SIGNED_IN, SIGNED_OUT)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (_event === 'SIGNED_IN') {
-        // After any sign-in event (login form, invite link), redirect to dashboard
         navigate('/admin/dashboard');
+      }
+      // This is the new part to handle password recovery
+      if (_event === 'PASSWORD_RECOVERY') {
+        navigate('/update-password');
       }
     });
 
-    // Cleanup the subscription when the component unmounts
     return () => {
       subscription.unsubscribe();
     };
   }, [navigate]);
 
   const login = async (credentials) => {
-    try {
-      const { error } = await supabase.auth.signInWithPassword(credentials);
-      if (error) {
-        console.error('Login failed:', error);
-        return false;
-      }
-      return true;
-    } catch (error) {
-      console.error('Login request failed:', error);
-      return false;
-    }
+    const { error } = await supabase.auth.signInWithPassword(credentials);
+    return !error;
   };
 
   const logout = async () => {
     await supabase.auth.signOut();
-    navigate('/'); // Redirect to homepage on logout
+    navigate('/');
   };
 
-  // Note: We use !!session to convert the session object (or null) to a boolean
+  // New function to update the user's password
+  const updatePassword = async (newPassword) => {
+    const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+    return { data, error };
+  };
+
   const value = {
-    isAuthenticated: !!session, 
+    isAuthenticated: !!session,
     isLoading,
     session,
     login,
     logout,
+    updatePassword, // Expose the new function
   };
 
-  // We don't render anything until the initial session check is complete
   return (
     <AuthContext.Provider value={value}>
       {!isLoading && children}
-    </AuthContext.Provider>
+    </Auth-Context.Provider>
   );
 };
