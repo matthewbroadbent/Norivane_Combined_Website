@@ -21,7 +21,7 @@ export const BlogProvider = ({ children }) => {
 
   const getBlogPostBySlug = async (slug) => {
     try {
-      const response = await fetch(`${BLOG_API_BASE_URL}/${slug}`);
+      const response = await fetch(`${BLOG_API_BASE_URL}/posts/${slug}`); // Added /posts/ to the URL
       if (!response.ok) {
         if (response.status === 404) {
           return null;
@@ -30,7 +30,11 @@ export const BlogProvider = ({ children }) => {
       }
       const data = await response.json();
       // FIX: Instead of returning the whole wrapper, return the 'post' object inside it.
-      return data.post; 
+      // Confirm the structure the backend sends for a single post.
+      // If it's `{"post": {...}}`, then `data.post` is correct.
+      // If it's `{...}` directly, then just `data` is correct.
+      // Based on your `/api/blog/posts` response, it's likely just `data`.
+      return data; // Assuming single post endpoint returns the post object directly
     } catch (err) {
       console.error(`Failed to fetch blog post with slug ${slug}:`, err);
       return null;
@@ -43,7 +47,7 @@ export const BlogProvider = ({ children }) => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${BLOG_API_BASE_URL}/posts`);
+        const response = await fetch(`${BLOG_API_BASE_URL}/posts`); // Make sure this is the correct endpoint for ALL posts
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -51,7 +55,9 @@ export const BlogProvider = ({ children }) => {
         
         const data = await response.json();
         
-        setBlogPosts(data.posts || []); 
+        // --- THE FIX IS HERE ---
+        // Your API returns the array directly, not inside a 'posts' property.
+        setBlogPosts(data); // Changed from data.posts || [] to data
       } catch (err) {
         console.error("Failed to fetch blog posts:", err);
         setError("Failed to load blog posts. Please try again later.");
@@ -64,7 +70,13 @@ export const BlogProvider = ({ children }) => {
     fetchBlogPosts();
   }, []);
 
+  // getPublishedPosts is now redundant as blogPosts already holds all posts.
+  // You can filter blogPosts directly in AdminDashboard if needed,
+  // or keep this if you want a dedicated function for published ones.
   const getPublishedPosts = () => {
+    // If you always want to return only published posts from this function:
+    // return blogPosts.filter(post => post.published);
+    // Otherwise, if you want all posts (as it was before):
     return blogPosts;
   };
 
@@ -72,7 +84,7 @@ export const BlogProvider = ({ children }) => {
     blogPosts,
     loading,
     error,
-    getPublishedPosts,
+    getPublishedPosts, // Note: This now returns all posts from `blogPosts` state.
     getBlogPostBySlug
   };
 
