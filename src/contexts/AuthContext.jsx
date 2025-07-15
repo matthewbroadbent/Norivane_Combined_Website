@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/lib/supabase.ts';
 
 const AuthContext = createContext();
 
@@ -11,57 +13,66 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [session, setSession] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if the user's auth token exists in local storage
-    const token = localStorage.getItem('supabase_token');
-    if (token) {
-      setIsAuthenticated(true);
-    }
-    setIsLoading(false);
-  }, []);
+    // Check for an existing session when the app loads
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+      setIsLoading(false);
+    };
+    getSession();
+
+    // Listen for authentication state changes (SIGNED_IN, SIGNED_OUT)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (_event === 'SIGNED_IN') {
+        // After any sign-in event (login form, invite link), redirect to dashboard
+        navigate('/admin/dashboard');
+      }
+    });
+
+    // Cleanup the subscription when the component unmounts
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const login = async (credentials) => {
     try {
-      // This is the API call to your backend
-      const response = await fetch('https://blog-norivane.vercel.app/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // Store the actual token from Supabase for security
-        localStorage.setItem('supabase_token', data.session.access_token);
-        setIsAuthenticated(true);
-        return true; // Indicate success
-      } else {
-        // Login failed on the server
-        return false; // Indicate failure
+      const { error } = await supabase.auth.signInWithPassword(credentials);
+      if (error) {
+        console.error('Login failed:', error);
+        return false;
       }
+      return true;
     } catch (error) {
       console.error('Login request failed:', error);
-      return false; // Indicate failure
+      return false;
     }
   };
 
-  const logout = () => {
-    // Remove the specific token on logout
-    localStorage.removeItem('supabase_token');
-    setIsAuthenticated(false);
+  const logout = async () => {
+    await supabase.auth.signOut();
+    navigate('/'); // Redirect to homepage on logout
   };
 
+  // Note: We use !!session to convert the session object (or null) to a boolean
   const value = {
-    isAuthenticated,
+    isAuthenticated: !!session, 
     isLoading,
+    session,
     login,
     logout,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  // We don't render anything until the initial session check is complete
+  return (
+    <AuthContext.Provider value={value}>
+      {!isLoading && children}
+    </AuthContext.Provider>
+  );
 };
