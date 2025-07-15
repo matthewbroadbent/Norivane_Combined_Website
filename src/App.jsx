@@ -15,6 +15,7 @@ import Sitemap from './pages/Sitemap';
 import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer';
 import SitemapGenerator from './components/SitemapGenerator';
+import AuthCallback from './pages/AuthCallback'; // 1. IMPORT ADDED
 
 function App() {
   return (
@@ -27,7 +28,8 @@ function App() {
               {/* Sitemap Route */}
               <Route path="/sitemap.xml" element={<Sitemap />} />
               
-              {/* Admin Routes */}
+              {/* --- Admin & Auth Routes --- */}
+              <Route path="/auth/callback" element={<AuthCallback />} /> {/* 2. ROUTE ADDED */}
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route 
                 path="/admin/dashboard" 
@@ -38,7 +40,7 @@ function App() {
                 } 
               />
               
-              {/* Public Routes */}
+              {/* --- Public Routes --- */}
               <Route path="/*" element={
                 <>
                   <Navbar />
