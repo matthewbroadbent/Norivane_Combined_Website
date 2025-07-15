@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }) => {
       if (_event === 'SIGNED_IN') {
         navigate('/admin/dashboard');
       }
-      // This is the new part to handle password recovery
       if (_event === 'PASSWORD_RECOVERY') {
         navigate('/update-password');
       }
@@ -51,7 +50,6 @@ export const AuthProvider = ({ children }) => {
     navigate('/');
   };
 
-  // New function to update the user's password
   const updatePassword = async (newPassword) => {
     const { data, error } = await supabase.auth.updateUser({ password: newPassword });
     return { data, error };
@@ -63,12 +61,12 @@ export const AuthProvider = ({ children }) => {
     session,
     login,
     logout,
-    updatePassword, // Expose the new function
+    updatePassword,
   };
 
   return (
     <AuthContext.Provider value={value}>
       {!isLoading && children}
-    </Auth-Context.Provider>
+    </AuthContext.Provider> // <-- This was the line with the typo, now corrected.
   );
 };
