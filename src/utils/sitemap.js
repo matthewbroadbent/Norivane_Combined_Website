@@ -82,11 +82,11 @@ ${urlsetClose}`
 export const getBlogPostsForSitemap = (blogPosts) => {
   const baseUrl = 'https://norivane.com'
   const currentDate = new Date().toISOString()
-  
+
   return blogPosts.map(post => ({
-    url: `/blog/${post.id}`,
+    url: `/blog/${post.slug}`,
     changefreq: 'monthly',
     priority: '0.6',
-    lastmod: post.updatedAt || post.date || currentDate
+    lastmod: post.updated_at || post.published_at || post.created_at || currentDate
   }))
 }

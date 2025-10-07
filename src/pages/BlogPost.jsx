@@ -1,62 +1,62 @@
-import React from 'react'
-import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react'
 import { useParams, Navigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Calendar, User, ArrowLeft, Tag, Clock } from 'lucide-react'
 import { useBlog } from '../contexts/BlogContext'
+import { renderMarkdown } from '../utils/markdown'
 
 const BlogPost = () => {
-  const { slug } = useParams();
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { getPublishedPosts, getBlogPostBySlug } = useBlog();
-  const [allPublishedPosts, setAllPublishedPosts] = useState([]);
+  const { slug } = useParams()
+  const [post, setPost] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const { getPublishedPosts, getBlogPostBySlug } = useBlog()
+  const [allPublishedPosts, setAllPublishedPosts] = useState([])
 
   useEffect(() => {
-    const fetchAllPosts = async () => {
+    const fetchAllPosts = () => {
       try {
-        const posts = await getPublishedPosts();
-        setAllPublishedPosts(posts);
+        const posts = getPublishedPosts()
+        setAllPublishedPosts(posts)
       } catch (err) {
-        // console.error("Failed to load all published posts:", err);
+        console.error('Failed to load all published posts:', err)
       }
-    };
+    }
 
     const fetchSinglePost = async () => {
       if (!slug) {
-        setLoading(false);
-        setError("No slug provided for blog post.");
-        return;
+        setLoading(false)
+        setError('No slug provided for blog post.')
+        return
       }
-      setLoading(true);
-      setError(null);
+      setLoading(true)
+      setError(null)
       try {
-        const fetchedPost = await getBlogPostBySlug(slug);
+        const fetchedPost = await getBlogPostBySlug(slug)
         if (fetchedPost) {
-          setPost(fetchedPost);
+          setPost(fetchedPost)
         } else {
-          setError("Blog post not found.");
-          setPost(null);
+          setError('Blog post not found.')
+          setPost(null)
         }
       } catch (err) {
-        setError("Failed to load blog post.");
-        setPost(null);
+        setError('Failed to load blog post.')
+        setPost(null)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchSinglePost();
-    fetchAllPosts();
-  }, [slug, getBlogPostBySlug, getPublishedPosts]);
+    fetchSinglePost()
+    fetchAllPosts()
+  }, [slug, getBlogPostBySlug, getPublishedPosts])
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-16">
         <p className="text-xl text-gray-700">Loading blog post, please wait...</p>
       </div>
-    );
+    )
   }
   if (error) {
     return (
@@ -69,7 +69,7 @@ const BlogPost = () => {
           Go Back
         </button>
       </div>
-    );
+    )
   }
 
   if (!post) {
@@ -82,44 +82,19 @@ const BlogPost = () => {
     transition: { duration: 0.6 }
   }
 
-  const formatContent = (content) => {
-    if (!content) return generateSampleContent(post)
-    
-    let formattedContent = content
-      .replace(/^### (.*$)/gm, '<h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">$1</h3>')
-      .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">$1</h2>')
-      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold text-dark-blue mb-6 mt-8">$1</h1>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-dark-blue">$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-      .replace(/^\* (.*$)/gm, '<li class="mb-2 ml-4 relative before:content-[\'•\'] before:absolute before:-left-4 before:text-teal before:font-bold">$1</li>')
-      .replace(/^- (.*$)/gm, '<li class="mb-2 ml-4 relative before:content-[\'•\'] before:absolute before:-left-4 before:text-teal before:font-bold">$1</li>')
-      .replace(/^\d+\. (.*$)/gm, '<li class="mb-2 ml-4 list-decimal">$1</li>')
-      .replace(/^> (.*$)/gm, '<blockquote class="border-l-4 border-teal bg-gray-50 p-6 my-8 italic text-gray-600"><p class="mb-0">$1</p></blockquote>')
-      .replace(/^(?!<[h|l|b])(.*\S.*$)/gm, '<p class="mb-4 leading-relaxed text-gray-700">$1</p>')
-      .replace(/<p class="mb-4 leading-relaxed text-gray-700"><\/p>/g, '')
-      .replace(/(<li class="mb-2 ml-4[^>]*>.*?<\/li>\s*)+/g, (match) => {
-        return `<ul class="mb-6 space-y-2">${match}</ul>`
-      })
-      .replace(/(<li class="mb-2 ml-4 list-decimal">.*?<\/li>\s*)+/g, (match) => {
-        return `<ol class="mb-6 space-y-2 list-decimal list-inside">${match}</ol>`
-      })
+  const contentHtml = renderMarkdown(post.content || generateSampleContent(post))
 
-    return formattedContent
-  }
-
-  // Get featured image with fallback
   const getFeaturedImage = () => {
-    // FIX 1: Look for 'featured_image' instead of 'image'
     if (post.featured_image && post.featured_image.trim()) {
       return post.featured_image
     }
-    // Default fallback image
     return 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop'
   }
 
+  const publicationDate = post.published_at || post.created_at
+
   return (
     <div className="min-h-screen pt-16">
-      {/* Hero Section */}
       <section className="py-20 gradient-bg text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -127,43 +102,43 @@ const BlogPost = () => {
             animate="animate"
             variants={fadeInUp}
           >
-            <button 
+            <button
               onClick={() => window.history.back()}
               className="flex items-center space-x-2 text-white/80 hover:text-white mb-8 transition-colors duration-200"
             >
               <ArrowLeft size={20} />
               <span>Back to Blog</span>
             </button>
-            
+
             <div className="flex items-center space-x-4 text-sm text-gray-200 mb-6">
               <span className="flex items-center space-x-1">
                 <Tag size={16} />
-                <span>{post.category}</span>
+                <span>{post.category || 'Uncategorised'}</span>
               </span>
               <span className="flex items-center space-x-1">
                 <Calendar size={16} />
-                <span>{new Date(post.date).toLocaleDateString()}</span>
+                <span>{publicationDate ? new Date(publicationDate).toLocaleDateString() : '—'}</span>
               </span>
               <span className="flex items-center space-x-1">
                 <Clock size={16} />
-                <span>{post.readTime}</span>
+                <span>{post.read_time || '5 min read'}</span>
               </span>
             </div>
-            
+
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
               {post.title}
             </h1>
-            
+
             <p className="text-xl text-gray-200 mb-8 leading-relaxed">
               {post.excerpt}
             </p>
-            
+
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
                 <User size={24} className="text-white" />
               </div>
               <div>
-                <p className="font-semibold text-white">{post.author}</p>
+                <p className="font-semibold text-white">{post.author || 'Norivane Team'}</p>
                 <p className="text-gray-300 text-sm">Business Strategist</p>
               </div>
             </div>
@@ -171,7 +146,6 @@ const BlogPost = () => {
         </div>
       </section>
 
-      {/* Featured Image */}
       <section className="py-0">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -192,7 +166,6 @@ const BlogPost = () => {
         </div>
       </section>
 
-      {/* Article Content */}
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.article
@@ -201,21 +174,20 @@ const BlogPost = () => {
             variants={fadeInUp}
             className="prose prose-lg max-w-none"
           >
-            <div 
+            <div
               className="article-content text-gray-700 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: formatContent(post.content) }}
+              dangerouslySetInnerHTML={{ __html: contentHtml }}
             />
           </motion.article>
         </div>
       </section>
 
-      {/* Related Posts */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-dark-blue mb-8">Related Articles</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {allPublishedPosts
-              .filter(p => p.id !== post.id && p.category && p.category === post.category)
+              .filter((p) => p.id !== post.id && p.category && p.category === post.category)
               .slice(0, 3)
               .map((relatedPost) => (
                 <Link to={`/blog/${relatedPost.slug}`} className="block" key={relatedPost.id}>
@@ -228,7 +200,6 @@ const BlogPost = () => {
                   >
                     <div className="relative h-48 overflow-hidden">
                       <img
-                        // FIX 2: Look for 'featured_image' here as well
                         src={relatedPost.featured_image || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'}
                         alt={relatedPost.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -242,7 +213,7 @@ const BlogPost = () => {
                         {relatedPost.title}
                       </h3>
                       <p className="text-medium-grey text-sm">
-                        {relatedPost.excerpt.substring(0, 100)}...
+                        {relatedPost.excerpt?.substring(0, 100)}...
                       </p>
                     </div>
                   </motion.article>
@@ -252,7 +223,6 @@ const BlogPost = () => {
         </div>
       </section>
 
-      {/* Newsletter CTA */}
       <section className="py-16 gradient-bg text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -285,23 +255,24 @@ const BlogPost = () => {
 }
 
 const generateSampleContent = (post) => {
-  const sampleContent = {
-    'Exit Planning': `...`, // Content hidden for brevity
-    'AI Solutions': `...`, // Content hidden for brevity
-    'Business Growth': `...`, // Content hidden for brevity
-    'Thought Leadership': `...` // Content hidden for brevity
-  }
-  
-  return sampleContent[post.category] || `
-    <h2 class="text-2xl font-bold text-dark-blue mb-4 mt-8">${post.title}</h2>
-    <p class="mb-4 leading-relaxed text-gray-700">${post.excerpt}</p>
-    <p class="mb-4 leading-relaxed text-gray-700">This is a sample article demonstrating the blog post functionality. In a real implementation, this content would be stored in your content management system and could include rich text, images, videos, and other media.</p>
-    <h3 class="text-xl font-semibold text-dark-blue mb-3 mt-6">Key Takeaways</h3>
-    <ul class="mb-6 space-y-2">
-      <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Understanding the importance of ${post.category?.toLowerCase() || 'this topic'}</li>
-      <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Implementing best practices in your business</li>
-      <li class="mb-2 ml-4 relative before:content-['•'] before:absolute before:-left-4 before:text-teal before:font-bold">Measuring success and continuous improvement</li>
-    </ul>
+  return `
+# ${post.title || 'Norivane Blog Article'}
+
+${post.excerpt || 'This article explores how forward-thinking leaders apply value acceleration and AI strategies to grow resilient businesses.'}
+
+## Key Takeaways
+
+- Align your strategy with long-term value drivers
+- Embed data-backed decision making across teams
+- Create an exit plan that keeps you acquisition-ready
+
+### What you will learn
+
+1. Why preparation increases business valuations
+2. How to use AI for practical productivity gains
+3. The metrics to monitor as you scale
+
+> Want tailored guidance? Reach out to the Norivane team for a bespoke consultation.
   `
 }
 
