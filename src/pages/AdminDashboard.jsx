@@ -1,18 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Edit, Trash2, Eye, EyeOff, Calendar, User, Tag, LogOut } from 'lucide-react'
+import { Plus, Edit, Trash2, Eye, EyeOff, Calendar, User, Tag, LogOut, Loader2, AlertTriangle, CheckCircle } from 'lucide-react'
 import { useBlog } from '../contexts/BlogContext'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import BlogEditor from '../components/BlogEditor'
 
 const AdminDashboard = () => {
-  const { blogPosts, deletePost, updatePost } = useBlog()
+  const { adminPosts, adminLoading, loadAdminPosts, deletePost, updatePost } = useBlog()
   const { logout } = useAuth()
   const navigate = useNavigate()
   const [showEditor, setShowEditor] = useState(false)
   const [editingPost, setEditingPost] = useState(null)
   const [filter, setFilter] = useState('all')
+  const [bannerMessage, setBannerMessage] = useState('')
+  const [bannerError, setBannerError] = useState('')
+
+  useEffect(() => {
+    loadAdminPosts().catch((err) => {
+      console.error('Failed to initialise posts:', err)
+      setBannerError('Unable to load blog posts. Please refresh the page.')
+    })
+  }, [loadAdminPosts])
 
   const handleLogout = () => {
     logout()
@@ -24,14 +33,34 @@ const AdminDashboard = () => {
     setShowEditor(true)
   }
 
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this post?')) {
-      deletePost(id)
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this post?')) return
+    try {
+      setBannerError('')
+      setBannerMessage('')
+      await deletePost(id)
+      setBannerMessage('Post deleted successfully.')
+    } catch (err) {
+      console.error('Failed to delete post:', err)
+      setBannerError(err.message || 'Unable to delete the selected post.')
     }
   }
 
-  const handleTogglePublish = (post) => {
-    updatePost(post.id, { ...post, published: !post.published })
+  const handleTogglePublish = async (post) => {
+    const nextStatus = post.status === 'published' ? 'draft' : 'published'
+    try {
+      setBannerError('')
+      setBannerMessage('')
+      await updatePost(post.id, {
+        ...post,
+        status: nextStatus,
+        published_at: nextStatus === 'published' ? post.published_at || new Date().toISOString() : null
+      })
+      setBannerMessage(nextStatus === 'published' ? 'Post published successfully.' : 'Post moved to drafts.')
+    } catch (err) {
+      console.error('Failed to toggle publish state:', err)
+      setBannerError(err.message || 'Unable to update the post status.')
+    }
   }
 
   const handleNewPost = () => {
@@ -39,17 +68,19 @@ const AdminDashboard = () => {
     setShowEditor(true)
   }
 
-  const filteredPosts = blogPosts.filter(post => {
-    if (filter === 'published') return post.published
-    if (filter === 'draft') return !post.published
-    return true
-  })
+  const filteredPosts = useMemo(() => {
+    return adminPosts.filter((post) => {
+      if (filter === 'published') return post.status === 'published'
+      if (filter === 'draft') return post.status !== 'published'
+      return true
+    })
+  }, [adminPosts, filter])
 
-  const stats = {
-    total: blogPosts.length,
-    published: blogPosts.filter(p => p.published).length,
-    drafts: blogPosts.filter(p => !p.published).length
-  }
+  const stats = useMemo(() => ({
+    total: adminPosts.length,
+    published: adminPosts.filter((p) => p.status === 'published').length,
+    drafts: adminPosts.filter((p) => p.status !== 'published').length
+  }), [adminPosts])
 
   if (showEditor) {
     return (
@@ -61,9 +92,30 @@ const AdminDashboard = () => {
     )
   }
 
+  const renderBanner = () => {
+    if (bannerError) {
+      return (
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+          <AlertTriangle size={18} className="mt-0.5" />
+          <p className="text-sm md:text-base">{bannerError}</p>
+        </div>
+      )
+    }
+
+    if (bannerMessage) {
+      return (
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-teal/30 bg-teal/10 p-4 text-teal">
+          <CheckCircle size={18} className="mt-0.5" />
+          <p className="text-sm md:text-base">{bannerMessage}</p>
+        </div>
+      )
+    }
+
+    return null
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -89,7 +141,8 @@ const AdminDashboard = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats */}
+        {renderBanner()}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -142,9 +195,8 @@ const AdminDashboard = () => {
           </motion.div>
         </div>
 
-        {/* Filters */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex space-x-4">
+          <div className="flex flex-wrap gap-3">
             <button
               onClick={() => setFilter('all')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
@@ -172,7 +224,6 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Posts List */}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
@@ -199,95 +250,109 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredPosts.map((post) => (
-                  <motion.tr
-                    key={post.id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="hover:bg-gray-50"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <img
-                          src={post.image}
-                          alt={post.title}
-                          className="w-12 h-12 rounded-lg object-cover mr-4"
-                        />
-                        <div>
-                          <div className="text-sm font-medium text-dark-blue">
-                            {post.title}
-                          </div>
-                          <div className="text-sm text-medium-grey">
-                            {post.excerpt.substring(0, 60)}...
+                {filteredPosts.map((post) => {
+                  const displayDate = post.published_at || post.created_at
+                  const isPublished = post.status === 'published'
+                  const excerpt = post.excerpt || ''
+
+                  return (
+                    <motion.tr
+                      key={post.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="hover:bg-gray-50"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <img
+                            src={post.featured_image || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop'}
+                            alt={post.title}
+                            className="w-12 h-12 rounded-lg object-cover mr-4"
+                            onError={(event) => {
+                              event.currentTarget.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop'
+                            }}
+                          />
+                          <div>
+                            <div className="text-sm font-medium text-dark-blue">
+                              {post.title}
+                            </div>
+                            <div className="text-sm text-medium-grey">
+                              {excerpt ? `${excerpt.slice(0, 60)}${excerpt.length > 60 ? '…' : ''}` : 'No excerpt available'}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {post.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <User size={16} className="text-medium-grey mr-2" />
-                        <span className="text-sm text-dark-blue">{post.author}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <Calendar size={16} className="text-medium-grey mr-2" />
-                        <span className="text-sm text-dark-blue">
-                          {new Date(post.date).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {post.category || 'Uncategorised'}
                         </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        onClick={() => handleTogglePublish(post)}
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          post.published
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-orange-100 text-orange-800'
-                        }`}
-                      >
-                        {post.published ? (
-                          <>
-                            <Eye size={12} className="mr-1" />
-                            Published
-                          </>
-                        ) : (
-                          <>
-                            <EyeOff size={12} className="mr-1" />
-                            Draft
-                          </>
-                        )}
-                      </button>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <User size={16} className="text-medium-grey mr-2" />
+                          <span className="text-sm text-dark-blue">{post.author || 'Norivane Team'}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <Calendar size={16} className="text-medium-grey mr-2" />
+                          <span className="text-sm text-dark-blue">
+                            {displayDate ? new Date(displayDate).toLocaleDateString() : '—'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <button
-                          onClick={() => handleEdit(post)}
-                          className="text-teal hover:text-teal/80 transition-colors duration-200"
+                          onClick={() => handleTogglePublish(post)}
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            isPublished ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'
+                          }`}
                         >
-                          <Edit size={16} />
+                          {isPublished ? (
+                            <>
+                              <Eye size={12} className="mr-1" />
+                              Published
+                            </>
+                          ) : (
+                            <>
+                              <EyeOff size={12} className="mr-1" />
+                              Draft
+                            </>
+                          )}
                         </button>
-                        <button
-                          onClick={() => handleDelete(post.id)}
-                          className="text-red-600 hover:text-red-800 transition-colors duration-200"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleEdit(post)}
+                            className="text-teal hover:text-teal/80 transition-colors duration-200"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(post.id)}
+                            className="text-red-600 hover:text-red-800 transition-colors duration-200"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </motion.tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
         </div>
 
-        {filteredPosts.length === 0 && (
+        {adminLoading && (
+          <div className="flex items-center justify-center gap-2 py-6 text-medium-grey">
+            <Loader2 className="animate-spin" size={18} />
+            <span>Loading posts…</span>
+          </div>
+        )}
+
+        {!adminLoading && filteredPosts.length === 0 && (
           <div className="text-center py-12">
             <p className="text-xl text-medium-grey">No posts found matching your filter.</p>
           </div>

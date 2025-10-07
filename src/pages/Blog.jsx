@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Search, Calendar, User, ArrowRight, Tag } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -6,23 +6,24 @@ import { useBlog } from '../contexts/BlogContext'
 import SEOHelmet from '../components/SEOHelmet'
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation'
 
-const Blog = () => {
-  const { blogPosts: allBlogPosts, loading, error } = useBlog(); 
+const CATEGORIES = ['All', 'Exit Planning', 'AI Solutions', 'Business Growth', 'Thought Leadership']
 
+const Blog = () => {
+  const { blogPosts: publishedPosts, loading, error } = useBlog()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
-  const categories = ['All', 'Exit Planning', 'AI Solutions', 'Business Growth', 'Thought Leadership']
-  
-  const filteredPosts = allBlogPosts.filter(post => { 
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
+  const filteredPosts = useMemo(() => {
+    return publishedPosts.filter((post) => {
+      const titleMatch = post.title?.toLowerCase().includes(searchTerm.toLowerCase())
+      const excerptMatch = post.excerpt?.toLowerCase().includes(searchTerm.toLowerCase())
+      const categoryMatch = selectedCategory === 'All' || post.category === selectedCategory
+      return (titleMatch || excerptMatch) && categoryMatch
+    })
+  }, [publishedPosts, searchTerm, selectedCategory])
 
-  const featuredPost = filteredPosts.find(post => post.featured)
-  const regularPosts = filteredPosts.filter(post => !post.featured)
+  const featuredPost = filteredPosts.find((post) => post.featured)
+  const regularPosts = filteredPosts.filter((post) => (featuredPost ? post.id !== featuredPost.id : true))
 
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
@@ -51,7 +52,7 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen">
-      <SEOHelmet 
+      <SEOHelmet
         title="Business Insights Blog | AI, Exit Planning & Growth Strategies | Norivane"
         description="Expert insights on business value acceleration, AI implementation, exit planning, and growth strategies. Practical advice from experienced consultants."
         keywords="business blog, AI insights, exit planning advice, business growth, value acceleration, business strategy, consulting insights"
@@ -72,7 +73,7 @@ const Blog = () => {
               The Value Accelerator <span className="text-teal">Blog</span>
             </motion.h1>
             <motion.p variants={fadeInUp} className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-gray-200">
-              Insights, tips, and stories on business value, exit planning, AI in practice, 
+              Insights, tips, and stories on business value, exit planning, AI in practice,
               and the future of business.
             </motion.p>
           </motion.div>
@@ -94,7 +95,7 @@ const Blog = () => {
             </div>
 
             <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
+              {CATEGORIES.map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
@@ -168,13 +169,13 @@ const Blog = () => {
                       <div className="flex items-center space-x-4 text-sm text-medium-grey mb-4">
                         <span className="flex items-center space-x-1">
                           <Tag size={16} />
-                          <span>{featuredPost.category}</span>
+                          <span>{featuredPost.category || 'Uncategorised'}</span>
                         </span>
                         <span className="flex items-center space-x-1">
                           <Calendar size={16} />
-                          <span>{new Date(featuredPost.date).toLocaleDateString()}</span>
+                          <span>{featuredPost.published_at ? new Date(featuredPost.published_at).toLocaleDateString() : '—'}</span>
                         </span>
-                        <span>{featuredPost.readTime}</span>
+                        <span>{featuredPost.read_time || '5 min read'}</span>
                       </div>
                       <h2 className="text-2xl md:text-3xl font-bold text-dark-blue mb-4">
                         {featuredPost.title}
@@ -187,10 +188,10 @@ const Blog = () => {
                           <div className="w-10 h-10 bg-teal/10 rounded-full flex items-center justify-center">
                             <User size={20} className="text-teal" />
                           </div>
-                          <span className="font-semibold text-dark-blue">{featuredPost.author}</span>
+                          <span className="font-semibold text-dark-blue">{featuredPost.author || 'Norivane Team'}</span>
                         </div>
-                        <Link 
-                          to={`/blog/${featuredPost.slug}`} 
+                        <Link
+                          to={`/blog/${featuredPost.slug}`}
                           className="flex items-center space-x-2 text-teal font-semibold hover:text-teal/80 transition-colors duration-200"
                         >
                           <span>Read More</span>
@@ -204,115 +205,69 @@ const Blog = () => {
             </section>
           )}
 
-          <section className="py-16 bg-white">
+          <section className="py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <motion.div
                 initial="initial"
                 whileInView="animate"
                 viewport={{ once: true }}
                 variants={staggerChildren}
-                className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                className="grid gap-10 md:grid-cols-2 lg:grid-cols-3"
               >
-                {regularPosts.length > 0 ? (
-                  regularPosts.map((post) => (
-                    <motion.article
-                      key={post.id}
-                      variants={fadeInUp}
-                      className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group"
-                    >
-                      <Link to={`/blog/${post.slug}`} className="block">
-                        <div className="relative h-48 overflow-hidden">
-                          <img
-                            src={getImageWithFallback(post.featured_image)}
-                            alt={post.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            onError={(e) => {
-                              e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
-                            }}
-                          />
-                          <div className="absolute top-4 left-4">
-                            <span className="bg-dark-blue/80 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                              {post.category}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="p-6">
-                          <div className="flex items-center space-x-4 text-sm text-medium-grey mb-3">
-                            <span className="flex items-center space-x-1">
-                              <Calendar size={14} />
-                              <span>{new Date(post.date).toLocaleDateString()}</span>
-                            </span>
-                            <span>{post.readTime}</span>
-                          </div>
-                          <h3 className="text-xl font-bold text-dark-blue mb-3 group-hover:text-teal transition-colors duration-200">
-                            {post.title}
-                          </h3>
-                          <p className="text-medium-grey mb-4 leading-relaxed">
-                            {post.excerpt}
-                          </p>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-8 h-8 bg-teal/10 rounded-full flex items-center justify-center">
-                                <User size={16} className="text-teal" />
-                              </div>
-                              <span className="text-sm font-semibold text-dark-blue">{post.author}</span>
-                            </div>
-                            <div className="flex items-center space-x-1 text-teal font-semibold hover:text-teal/80 transition-colors duration-200">
-                              <span className="text-sm">Read</span>
-                              <ArrowRight size={14} />
-                            </div>
-                          </div>
-                        </div>
+                {regularPosts.map((post) => (
+                  <motion.article
+                    key={post.id}
+                    variants={fadeInUp}
+                    className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group"
+                  >
+                    <div className="relative h-56 overflow-hidden">
+                      <img
+                        src={getImageWithFallback(post.featured_image)}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.target.src = 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop'
+                        }}
+                      />
+                      {post.featured && (
+                        <span className="absolute top-4 left-4 bg-teal text-white px-3 py-1 rounded-full text-xs font-semibold">
+                          Featured
+                        </span>
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <div className="flex items-center text-xs text-medium-grey space-x-4 mb-3">
+                        <span className="inline-flex items-center space-x-1">
+                          <Tag size={14} />
+                          <span>{post.category || 'Uncategorised'}</span>
+                        </span>
+                        <span className="inline-flex items-center space-x-1">
+                          <Calendar size={14} />
+                          <span>{post.published_at ? new Date(post.published_at).toLocaleDateString() : '—'}</span>
+                        </span>
+                        <span>{post.read_time || '5 min read'}</span>
+                      </div>
+                      <h3 className="text-lg font-bold text-dark-blue mb-3 group-hover:text-teal transition-colors duration-200">
+                        {post.title}
+                      </h3>
+                      <p className="text-medium-grey mb-4 leading-relaxed">
+                        {post.excerpt}
+                      </p>
+                      <Link
+                        to={`/blog/${post.slug}`}
+                        className="inline-flex items-center text-teal font-semibold hover:text-teal/80 transition-colors duration-200"
+                      >
+                        <span>Read Article</span>
+                        <ArrowRight size={16} className="ml-1" />
                       </Link>
-                    </motion.article>
-                  ))
-                ) : (
-                  <div className="text-center py-12 col-span-full">
-                    <p className="text-xl text-medium-grey">
-                      No articles found matching your criteria. Try adjusting your search or category filter.
-                    </p>
-                    {!loading && !error && allBlogPosts.length === 0 && (
-                      <p className="mt-4">It looks like there are no blog posts to display yet. Time to add some to your CMS!</p>
-                    )}
-                  </div>
-                )}
+                    </div>
+                  </motion.article>
+                ))}
               </motion.div>
             </div>
           </section>
         </>
       )}
-
-      <section className="py-16 gradient-bg text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Never Miss an Insight
-            </h2>
-            <p className="text-xl mb-8 text-gray-200 max-w-2xl mx-auto">
-              Get the latest articles on business value, AI implementation, and exit planning 
-              delivered straight to your inbox.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-full bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white/50"
-              />
-              <button className="bg-white text-dark-blue px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-200">
-                Subscribe
-              </button>
-            </div>
-            <p className="text-sm text-gray-300 mt-4">
-              Weekly insights, no spam. Unsubscribe anytime.
-            </p>
-          </motion.div>
-        </div>
-      </section>
     </div>
   )
 }
