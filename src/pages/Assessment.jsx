@@ -13,11 +13,11 @@ const Assessment = () => {
         {
             icon: <Target className="w-6 h-6 text-teal" />,
             title: "AI Readiness Score",
-            description: "Get a clear 0-100 score benchmarking your business maturity."
+            description: "Get a clear readiness score benchmarking your business maturity."
         },
         {
             icon: <FileText className="w-6 h-6 text-teal" />,
-            title: "Personalized Roadmap",
+            title: "Personalised Roadmap",
             description: "Receive actionable next steps tailored to your specific score."
         }
     ]
@@ -26,7 +26,7 @@ const Assessment = () => {
         <div className="min-h-screen pt-20 pb-10 bg-gray-50">
             <SEOHelmet
                 title="AI Readiness Assessment | Norivane"
-                description="Take our free 5-minute AI readiness assessment. Get your personalized score and a roadmap to scalable operations."
+                description="Take our free 5-minute AI readiness assessment. Get your personalised score and a roadmap to scalable operations."
                 keywords="AI assessment, business readiness, AI litmus test, scalable operations, Norivane"
                 canonicalUrl="/assessment"
             />

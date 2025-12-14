@@ -123,7 +123,7 @@ const AIBenefits = () => {
             </div>
             <h3 className="text-xl font-bold text-dark-blue mb-4">Better Customer Experience</h3>
             <p className="text-medium-grey mb-4">
-              Deliver personalized, instant service that exceeds customer expectations.
+              Deliver personalised, instant service that exceeds customer expectations.
             </p>
             <ul className="space-y-2">
               <li className="flex items-center space-x-3">
@@ -132,7 +132,7 @@ const AIBenefits = () => {
               </li>
               <li className="flex items-center space-x-3">
                 <CheckCircle size={16} className="text-teal" />
-                <span className="text-dark-grey text-sm">Personalized service</span>
+                <span className="text-dark-grey text-sm">Personalised service</span>
               </li>
               <li className="flex items-center space-x-3">
                 <CheckCircle size={16} className="text-teal" />
@@ -157,7 +157,7 @@ const AIBenefits = () => {
               ))}
             </div>
             <p className="text-medium-grey mb-6 italic">
-              "Our AI chatbot now handles 85% of customer inquiries instantly. Customer satisfaction 
+              "Our AI chatbot now handles 85% of customer inquiries instantly. Customer satisfaction
               increased by 40% while our support costs dropped by 60%. The ROI was incredible."
             </p>
             <div className="flex items-center">
@@ -178,7 +178,7 @@ const AIBenefits = () => {
               ))}
             </div>
             <p className="text-medium-grey mb-6 italic">
-              "The predictive analytics transformed our inventory management. We reduced waste by 35% 
+              "The predictive analytics transformed our inventory management. We reduced waste by 35%
               and improved cash flow significantly. The insights are incredibly accurate."
             </p>
             <div className="flex items-center">
