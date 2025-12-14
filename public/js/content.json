@@ -1,0 +1,14 @@
+{
+    "pages": {
+        "blog": {
+            "enabled": false,
+            "hideFromMenu": true
+        }
+    },
+    "navigation": {
+        "disabled": [
+            "/blog",
+            "/blog.html"
+        ]
+    }
+}
