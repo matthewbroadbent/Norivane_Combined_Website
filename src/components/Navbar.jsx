@@ -26,15 +26,8 @@ const Navbar = () => {
   }, [location])
 
   const navItems = [
-    {
-      name: 'Services',
-      hasDropdown: true,
-      dropdownItems: [
-        { name: 'AI Solutions', path: '/ai', description: 'Transform your business with AI' },
-        { name: 'Exit Planning', path: '/exit', description: 'Maximize your business value' }
-      ]
-    },
-
+    { name: 'AI Solutions', path: '/ai' },
+    { name: 'Exit Planning', path: '/exit' },
     { name: 'Contact', path: '/contact' }
   ]
 
