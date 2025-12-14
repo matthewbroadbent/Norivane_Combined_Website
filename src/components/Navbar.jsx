@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { motion, AnimatePresence } from 'framer-motion'
+
 import Logo from './Logo'
 import { useBlog } from '../contexts/BlogContext'
 
@@ -52,8 +52,8 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || !isHomePage
-        ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50'
-        : 'bg-transparent'
+      ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50'
+      : 'bg-transparent'
       }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -76,8 +76,8 @@ const Navbar = () => {
                     onMouseLeave={() => setActiveDropdown(null)}
                   >
                     <button className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${isScrolled || !isHomePage
-                        ? 'text-dark-blue hover:text-teal hover:bg-gray-50'
-                        : 'text-white hover:text-teal hover:bg-white/10'
+                      ? 'text-dark-blue hover:text-teal hover:bg-gray-50'
+                      : 'text-white hover:text-teal hover:bg-white/10'
                       }`}>
                       <span>{item.name}</span>
                       <ChevronDown size={16} className={`transition-transform duration-200 ${activeDropdown === item.name ? 'rotate-180' : ''
@@ -115,10 +115,10 @@ const Navbar = () => {
                   <Link
                     to={item.path}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${location.pathname === item.path
-                        ? (isScrolled || !isHomePage ? 'text-teal bg-teal/10' : 'text-teal bg-white/20')
-                        : (isScrolled || !isHomePage
-                          ? 'text-dark-blue hover:text-teal hover:bg-gray-50'
-                          : 'text-white hover:text-teal hover:bg-white/10')
+                      ? (isScrolled || !isHomePage ? 'text-teal bg-teal/10' : 'text-teal bg-white/20')
+                      : (isScrolled || !isHomePage
+                        ? 'text-dark-blue hover:text-teal hover:bg-gray-50'
+                        : 'text-white hover:text-teal hover:bg-white/10')
                       }`}
                   >
                     {item.name}
@@ -130,8 +130,8 @@ const Navbar = () => {
             <Link
               to="/contact"
               className={`px-6 py-2 rounded-full font-semibold text-sm transition-all duration-200 ${isScrolled || !isHomePage
-                  ? 'bg-teal text-white hover:bg-teal/90 hover:shadow-lg'
-                  : 'bg-white text-dark-blue hover:bg-gray-100 hover:shadow-lg'
+                ? 'bg-teal text-white hover:bg-teal/90 hover:shadow-lg'
+                : 'bg-white text-dark-blue hover:bg-gray-100 hover:shadow-lg'
                 }`}
             >
               Get Started
@@ -142,8 +142,8 @@ const Navbar = () => {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className={`md:hidden p-2 rounded-md transition-colors duration-200 ${isScrolled || !isHomePage
-                ? 'text-dark-blue hover:bg-gray-100'
-                : 'text-white hover:bg-white/10'
+              ? 'text-dark-blue hover:bg-gray-100'
+              : 'text-white hover:bg-white/10'
               }`}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -201,8 +201,8 @@ const Navbar = () => {
                       <Link
                         to={item.path}
                         className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${location.pathname === item.path
-                            ? 'text-teal bg-teal/10'
-                            : 'text-dark-blue hover:text-teal hover:bg-gray-50'
+                          ? 'text-teal bg-teal/10'
+                          : 'text-dark-blue hover:text-teal hover:bg-gray-50'
                           }`}
                       >
                         {item.name}
