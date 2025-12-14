@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Exit from './pages/Exit';
 import AI from './pages/AI';
+import Assessment from './pages/Assessment'; // [NEW]
 import Contact from './pages/Contact';
 import Sitemap from './pages/Sitemap';
 import Footer from './components/Footer';
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/exit" element={<Exit />} />
                 <Route path="/ai" element={<AI />} />
+                <Route path="/assessment" element={<Assessment />} /> {/* [NEW] */}
                 <Route path="/contact" element={<Contact />} />
               </Routes>
               <Footer />
