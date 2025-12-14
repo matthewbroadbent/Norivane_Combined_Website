@@ -1,11 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Exit from './pages/Exit';
-import AI from './pages/AI';
 import AI from './pages/AI';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
