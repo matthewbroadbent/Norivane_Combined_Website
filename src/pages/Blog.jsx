@@ -1,22 +1,31 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Search, Calendar, User, ArrowRight, Tag } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useBlog } from '../contexts/BlogContext'
 import SEOHelmet from '../components/SEOHelmet'
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation'
 
 const Blog = () => {
-  const { blogPosts: allBlogPosts, loading, error } = useBlog(); 
+  const { blogPosts, loading, error, blogConfig } = useBlog()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (blogConfig && blogConfig.pages && blogConfig.pages.blog) {
+      if (blogConfig.pages.blog.enabled === false) {
+        navigate('/')
+      }
+    }
+  }, [blogConfig, navigate]);
 
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
   const categories = ['All', 'Exit Planning', 'AI Solutions', 'Business Growth', 'Thought Leadership']
-  
-  const filteredPosts = allBlogPosts.filter(post => { 
+
+  const filteredPosts = allBlogPosts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+      post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory
     return matchesSearch && matchesCategory
   })
@@ -51,7 +60,7 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen">
-      <SEOHelmet 
+      <SEOHelmet
         title="Business Insights Blog | AI, Exit Planning & Growth Strategies | Norivane"
         description="Expert insights on business value acceleration, AI implementation, exit planning, and growth strategies. Practical advice from experienced consultants."
         keywords="business blog, AI insights, exit planning advice, business growth, value acceleration, business strategy, consulting insights"
@@ -72,7 +81,7 @@ const Blog = () => {
               The Value Accelerator <span className="text-teal">Blog</span>
             </motion.h1>
             <motion.p variants={fadeInUp} className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-gray-200">
-              Insights, tips, and stories on business value, exit planning, AI in practice, 
+              Insights, tips, and stories on business value, exit planning, AI in practice,
               and the future of business.
             </motion.p>
           </motion.div>
@@ -98,11 +107,10 @@ const Blog = () => {
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
-                    selectedCategory === category
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${selectedCategory === category
                       ? 'bg-teal text-white'
                       : 'bg-gray-100 text-medium-grey hover:bg-gray-200'
-                  }`}
+                    }`}
                 >
                   {category}
                 </button>
@@ -189,8 +197,8 @@ const Blog = () => {
                           </div>
                           <span className="font-semibold text-dark-blue">{featuredPost.author}</span>
                         </div>
-                        <Link 
-                          to={`/blog/${featuredPost.slug}`} 
+                        <Link
+                          to={`/blog/${featuredPost.slug}`}
                           className="flex items-center space-x-2 text-teal font-semibold hover:text-teal/80 transition-colors duration-200"
                         >
                           <span>Read More</span>
@@ -294,7 +302,7 @@ const Blog = () => {
               Never Miss an Insight
             </h2>
             <p className="text-xl mb-8 text-gray-200 max-w-2xl mx-auto">
-              Get the latest articles on business value, AI implementation, and exit planning 
+              Get the latest articles on business value, AI implementation, and exit planning
               delivered straight to your inbox.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">

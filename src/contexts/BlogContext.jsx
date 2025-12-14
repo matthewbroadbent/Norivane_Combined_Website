@@ -41,20 +41,43 @@ export const BlogProvider = ({ children }) => {
     }
   };
 
+  const [blogConfig, setBlogConfig] = useState(null);
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const response = await fetch('/js/content.json');
+        if (response.ok) {
+          const config = await response.json();
+          setBlogConfig(config);
+        }
+      } catch (err) {
+        console.error("Failed to load site config:", err);
+      }
+    };
+    fetchConfig();
+  }, []);
+
   useEffect(() => {
     const fetchBlogPosts = async () => {
       try {
         setLoading(true);
         setError(null);
 
+        // Only fetch posts if blog is NOT explicitly disabled
+        // (Optional optimization: if we have config ready and it says disabled, we could skip.
+        // But to keep it simple and ensure we have data if it gets enabled logically client-side, 
+        // we can still fetch or check config inside if desired. 
+        // For now, let's just leave the fetch as is, but maybe use the config downstream.)
+
         const response = await fetch(`${BLOG_API_BASE_URL}/posts`); // Make sure this is the correct endpoint for ALL posts
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         // --- THE FIX IS HERE ---
         // Your API returns the array directly, not inside a 'posts' property.
         setBlogPosts(data); // Changed from data.posts || [] to data
@@ -85,7 +108,8 @@ export const BlogProvider = ({ children }) => {
     loading,
     error,
     getPublishedPosts, // Note: This now returns all posts from `blogPosts` state.
-    getBlogPostBySlug
+    getBlogPostBySlug,
+    blogConfig
   };
 
   return (

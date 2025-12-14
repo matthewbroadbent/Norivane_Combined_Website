@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import Logo from './Logo'
+import { useBlog } from '../contexts/BlogContext'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState(null)
   const location = useLocation()
+  const { blogConfig } = useBlog()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,8 +28,8 @@ const Navbar = () => {
   }, [location])
 
   const navItems = [
-    { 
-      name: 'Services', 
+    {
+      name: 'Services',
       hasDropdown: true,
       dropdownItems: [
         { name: 'AI Solutions', path: '/ai', description: 'Transform your business with AI' },
@@ -35,21 +38,28 @@ const Navbar = () => {
     },
     { name: 'Blog', path: '/blog' },
     { name: 'Contact', path: '/contact' }
-  ]
+  ].filter(item => {
+    if (item.name === 'Blog') {
+      // Check if disabled or hidden via config
+      const isHidden = blogConfig?.pages?.blog?.hideFromMenu === true ||
+        blogConfig?.pages?.blog?.enabled === false;
+      return !isHidden;
+    }
+    return true;
+  })
 
   const isHomePage = location.pathname === '/'
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled || !isHomePage
-        ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50' 
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || !isHomePage
+        ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50'
         : 'bg-transparent'
-    }`}>
+      }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center group">
-            <Logo 
+            <Logo
               currentPath={location.pathname}
               variant={isScrolled || !isHomePage ? 'default' : 'white'}
             />
@@ -65,15 +75,13 @@ const Navbar = () => {
                     onMouseEnter={() => setActiveDropdown(item.name)}
                     onMouseLeave={() => setActiveDropdown(null)}
                   >
-                    <button className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                      isScrolled || !isHomePage
+                    <button className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${isScrolled || !isHomePage
                         ? 'text-dark-blue hover:text-teal hover:bg-gray-50'
                         : 'text-white hover:text-teal hover:bg-white/10'
-                    }`}>
+                      }`}>
                       <span>{item.name}</span>
-                      <ChevronDown size={16} className={`transition-transform duration-200 ${
-                        activeDropdown === item.name ? 'rotate-180' : ''
-                      }`} />
+                      <ChevronDown size={16} className={`transition-transform duration-200 ${activeDropdown === item.name ? 'rotate-180' : ''
+                        }`} />
                     </button>
 
                     <AnimatePresence>
@@ -106,13 +114,12 @@ const Navbar = () => {
                 ) : (
                   <Link
                     to={item.path}
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                      location.pathname === item.path
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${location.pathname === item.path
                         ? (isScrolled || !isHomePage ? 'text-teal bg-teal/10' : 'text-teal bg-white/20')
                         : (isScrolled || !isHomePage
                           ? 'text-dark-blue hover:text-teal hover:bg-gray-50'
                           : 'text-white hover:text-teal hover:bg-white/10')
-                    }`}
+                      }`}
                   >
                     {item.name}
                   </Link>
@@ -122,11 +129,10 @@ const Navbar = () => {
 
             <Link
               to="/contact"
-              className={`px-6 py-2 rounded-full font-semibold text-sm transition-all duration-200 ${
-                isScrolled || !isHomePage
+              className={`px-6 py-2 rounded-full font-semibold text-sm transition-all duration-200 ${isScrolled || !isHomePage
                   ? 'bg-teal text-white hover:bg-teal/90 hover:shadow-lg'
                   : 'bg-white text-dark-blue hover:bg-gray-100 hover:shadow-lg'
-              }`}
+                }`}
             >
               Get Started
             </Link>
@@ -135,11 +141,10 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className={`md:hidden p-2 rounded-md transition-colors duration-200 ${
-              isScrolled || !isHomePage
+            className={`md:hidden p-2 rounded-md transition-colors duration-200 ${isScrolled || !isHomePage
                 ? 'text-dark-blue hover:bg-gray-100'
                 : 'text-white hover:bg-white/10'
-            }`}
+              }`}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -167,9 +172,8 @@ const Navbar = () => {
                           className="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-dark-blue hover:text-teal hover:bg-gray-50 transition-colors duration-200"
                         >
                           <span>{item.name}</span>
-                          <ChevronDown size={16} className={`transition-transform duration-200 ${
-                            activeDropdown === item.name ? 'rotate-180' : ''
-                          }`} />
+                          <ChevronDown size={16} className={`transition-transform duration-200 ${activeDropdown === item.name ? 'rotate-180' : ''
+                            }`} />
                         </button>
                         <AnimatePresence>
                           {activeDropdown === item.name && (
@@ -196,11 +200,10 @@ const Navbar = () => {
                     ) : (
                       <Link
                         to={item.path}
-                        className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
-                          location.pathname === item.path
+                        className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${location.pathname === item.path
                             ? 'text-teal bg-teal/10'
                             : 'text-dark-blue hover:text-teal hover:bg-gray-50'
-                        }`}
+                          }`}
                       >
                         {item.name}
                       </Link>
