@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { useBlog } from '../contexts/BlogContext'
 
 const Sitemap = () => {
-  const { getPublishedPosts } = useBlog()
   const [sitemapXml, setSitemapXml] = useState('')
 
   useEffect(() => {
     const generateSitemap = () => {
       const baseUrl = 'https://norivane.com'
       const currentDate = new Date().toISOString()
-      
+
       // Static routes
       const staticRoutes = [
         {
@@ -20,20 +18,14 @@ const Sitemap = () => {
         },
         {
           url: '/ai',
-          changefreq: 'weekly', 
+          changefreq: 'weekly',
           priority: '0.9',
           lastmod: currentDate
         },
         {
           url: '/exit',
           changefreq: 'weekly',
-          priority: '0.9', 
-          lastmod: currentDate
-        },
-        {
-          url: '/blog',
-          changefreq: 'daily',
-          priority: '0.8',
+          priority: '0.9',
           lastmod: currentDate
         },
         {
@@ -44,16 +36,7 @@ const Sitemap = () => {
         }
       ]
 
-      // Dynamic blog routes
-      const blogPosts = getPublishedPosts()
-      const blogRoutes = blogPosts.map(post => ({
-        url: `/blog/${post.id}`,
-        changefreq: 'monthly',
-        priority: '0.6',
-        lastmod: post.updatedAt || post.date || currentDate
-      }))
-      
-      const allRoutes = [...staticRoutes, ...blogRoutes]
+      const allRoutes = [...staticRoutes]
 
       // Generate XML
       const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -76,7 +59,7 @@ ${urlsetClose}`
     }
 
     generateSitemap()
-  }, [getPublishedPosts])
+  }, [])
 
   // Set proper content type for XML
   useEffect(() => {
@@ -88,9 +71,9 @@ ${urlsetClose}`
   }, [sitemapXml])
 
   return (
-    <div style={{ 
-      fontFamily: 'monospace', 
-      whiteSpace: 'pre-wrap', 
+    <div style={{
+      fontFamily: 'monospace',
+      whiteSpace: 'pre-wrap',
       padding: '20px',
       backgroundColor: '#f5f5f5',
       minHeight: '100vh'

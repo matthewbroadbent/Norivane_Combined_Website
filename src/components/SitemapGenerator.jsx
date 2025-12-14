@@ -1,16 +1,12 @@
 import React, { useEffect } from 'react'
-import { useBlog } from '../contexts/BlogContext'
-import { getBlogPostsForSitemap } from '../utils/sitemap'
 
 const SitemapGenerator = () => {
-  const { getPublishedPosts } = useBlog()
-
   useEffect(() => {
     // Generate and serve sitemap
     const generateDynamicSitemap = () => {
       const baseUrl = 'https://norivane.com'
       const currentDate = new Date().toISOString()
-      
+
       // Static routes
       const staticRoutes = [
         {
@@ -21,20 +17,14 @@ const SitemapGenerator = () => {
         },
         {
           url: '/ai',
-          changefreq: 'weekly', 
+          changefreq: 'weekly',
           priority: '0.9',
           lastmod: currentDate
         },
         {
           url: '/exit',
           changefreq: 'weekly',
-          priority: '0.9', 
-          lastmod: currentDate
-        },
-        {
-          url: '/blog',
-          changefreq: 'daily',
-          priority: '0.8',
+          priority: '0.9',
           lastmod: currentDate
         },
         {
@@ -45,11 +35,7 @@ const SitemapGenerator = () => {
         }
       ]
 
-      // Dynamic blog routes
-      const blogPosts = getPublishedPosts()
-      const blogRoutes = getBlogPostsForSitemap(blogPosts)
-      
-      const allRoutes = [...staticRoutes, ...blogRoutes]
+      const allRoutes = [...staticRoutes]
 
       // Generate XML
       const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -73,7 +59,7 @@ ${urlsetClose}`
     }
 
     generateDynamicSitemap()
-  }, [getPublishedPosts])
+  }, [])
 
   return null // This component doesn't render anything
 }
