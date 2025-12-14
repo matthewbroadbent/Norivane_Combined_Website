@@ -1,13 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import { BlogProvider } from './contexts/BlogContext';
+import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Exit from './pages/Exit';
 import AI from './pages/AI';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
+import AI from './pages/AI';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
@@ -23,46 +22,43 @@ function App() {
     // Router should be the outermost component
     <Router>
       <AuthProvider>
-        <BlogProvider>
-          <div className="min-h-screen bg-white">
-            <SitemapGenerator />
-            <Routes>
-              {/* Sitemap Route */}
-              <Route path="/sitemap.xml" element={<Sitemap />} />
-              
-              {/* --- Admin & Auth Routes --- */}
-              <Route path="/auth/callback" element={<AuthCallback />} />
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route 
-                path="/admin/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                } 
-              />
-              
-              {/* --- Public Routes --- */}
-              <Route path="/*" element={
-                <>
-                  <Navbar />
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/exit" element={<Exit />} />
-                    <Route path="/ai" element={<AI />} />
-                    <Route path="/blog" element={<Blog />} />
-                    <Route path="/blog/:slug" element={<BlogPost />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/update-password" element={<UpdatePassword />} />
-                    <Route path="/auth/callback" element={<AuthCallback />} />
-                    <Route path="/admin/login" element={<AdminLogin />} />
-                  </Routes>
-                  <Footer />
-                </>
-              } />
-            </Routes>
-          </div>
-        </BlogProvider>
+        <div className="min-h-screen bg-white">
+          <SitemapGenerator />
+          <Routes>
+            {/* Sitemap Route */}
+            <Route path="/sitemap.xml" element={<Sitemap />} />
+
+            {/* --- Admin & Auth Routes --- */}
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* --- Public Routes --- */}
+            <Route path="/*" element={
+              <>
+                <Navbar />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/exit" element={<Exit />} />
+                  <Route path="/ai" element={<AI />} />
+                  <Route path="/ai" element={<AI />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/update-password" element={<UpdatePassword />} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                </Routes>
+                <Footer />
+              </>
+            } />
+          </Routes>
+        </div>
       </AuthProvider>
     </Router>
   );

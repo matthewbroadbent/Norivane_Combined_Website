@@ -4,14 +4,12 @@ import { Menu, X, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 import Logo from './Logo'
-import { useBlog } from '../contexts/BlogContext'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState(null)
   const location = useLocation()
-  const { blogConfig } = useBlog()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,17 +34,9 @@ const Navbar = () => {
         { name: 'Exit Planning', path: '/exit', description: 'Maximize your business value' }
       ]
     },
-    { name: 'Blog', path: '/blog' },
+
     { name: 'Contact', path: '/contact' }
-  ].filter(item => {
-    if (item.name === 'Blog') {
-      // Check if disabled or hidden via config
-      const isHidden = blogConfig?.pages?.blog?.hideFromMenu === true ||
-        blogConfig?.pages?.blog?.enabled === false;
-      return !isHidden;
-    }
-    return true;
-  })
+  ]
 
   const isHomePage = location.pathname === '/'
 
